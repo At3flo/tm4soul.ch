@@ -1,6 +1,5 @@
-import { BsFacebook } from 'react-icons/bs'
+import { Grid, GridItem } from '@chakra-ui/react'
 
-import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 
 const HomePage = () => {
@@ -8,15 +7,24 @@ const HomePage = () => {
     <>
       <MetaTags title="Home" description="Home page" />
 
-      <h1>HomePage</h1>
-      <BsFacebook />
-      <p>
-        Find me in <code>./web/src/pages/HomePage/HomePage.tsx</code>
-      </p>
-      <p>
-        My default route is named <code>home</code>, link to me with `
-        <Link to={routes.home()}>Home</Link>`
-      </p>
+      <Grid
+        templateAreas={`"nav nav"
+                  "main feed"`}
+        gridTemplateRows={'7em calc(100vh - 7em)'}
+        gridTemplateColumns={'65vw'}
+        rowGap="1"
+        columnGap="6"
+      >
+        <GridItem pl="2" bg="orange.300" area={'nav'}>
+          Header
+        </GridItem>
+        <GridItem pl="2" bg="pink.300" area={'main'}>
+          Nav
+        </GridItem>
+        <GridItem pl="2" bg="green.300" area={'feed'}>
+          Main
+        </GridItem>
+      </Grid>
     </>
   )
 }
