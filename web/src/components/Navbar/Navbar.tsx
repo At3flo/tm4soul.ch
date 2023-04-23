@@ -6,7 +6,7 @@ import {
   MenuList,
   MenuItem,
   Heading,
-  Box
+  Box,
 } from '@chakra-ui/react'
 import { BsFacebook, BsInstagram } from 'react-icons/bs'
 
