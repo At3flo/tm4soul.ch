@@ -1,9 +1,10 @@
-import { Divider, Grid, GridItem, Stack } from '@chakra-ui/react'
+import { Center, Divider, Grid, GridItem, Stack } from '@chakra-ui/react'
 
 import { MetaTags } from '@redwoodjs/web'
 
 import Feed from 'src/components/Feed/Feed'
 import Navbar from 'src/components/Navbar/Navbar'
+import NavigationLogo from 'src/components/NavigationLogo/NavigationLogo'
 
 const HomePage = () => {
   return (
@@ -28,8 +29,10 @@ const HomePage = () => {
         >
           <Navbar />
         </GridItem>
-        <GridItem pl="2" bg="pink.300" area={'main'}>
-          Nav
+        <GridItem bg="pink.300" area={'main'}>
+          <Center>
+            <NavigationLogo />
+          </Center>
         </GridItem>
         <GridItem py="8em" bg="green.200" area={'feed'}>
           <Stack direction="row" h="calc(100vh - 24em)">

@@ -6,7 +6,7 @@ const Feed = () => {
     // note: we are adding a key prop here to allow react to uniquely identify each
     // element in this array. see: https://reactjs.org/docs/lists-and-keys.html
     rows.push(
-      <div>
+      <div key={i}>
         <Heading>April 11 at 9:13 PM</Heading>
         <p>
           Wenn man sich, wie in einem Käfig fühlt... manchmal ist der Schlüssel
