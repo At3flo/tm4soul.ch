@@ -2,6 +2,8 @@ import { Grid, GridItem } from '@chakra-ui/react'
 
 import { MetaTags } from '@redwoodjs/web'
 
+import Navbar from 'src/components/Navbar/Navbar'
+
 const HomePage = () => {
   return (
     <>
@@ -11,12 +13,19 @@ const HomePage = () => {
         templateAreas={`"nav nav"
                   "main feed"`}
         gridTemplateRows={'7em calc(100vh - 7em)'}
-        gridTemplateColumns={'65vw'}
+        gridTemplateColumns={'70vw'}
         rowGap="1"
         columnGap="6"
       >
-        <GridItem pl="2" bg="orange.300" area={'nav'}>
-          Header
+        <GridItem
+          p="2"
+          bg="orange.300"
+          area={'nav'}
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Navbar />
         </GridItem>
         <GridItem pl="2" bg="pink.300" area={'main'}>
           Nav
