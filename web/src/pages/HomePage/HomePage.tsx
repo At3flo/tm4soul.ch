@@ -21,7 +21,7 @@ const HomePage = () => {
       >
         <GridItem
           p="2"
-          bg="orange.300"
+          bg="primary.gray"
           area={'nav'}
           display="flex"
           alignItems="center"
@@ -29,17 +29,17 @@ const HomePage = () => {
         >
           <Navbar />
         </GridItem>
-        <GridItem bg="pink.300" area={'main'}>
+        <GridItem bg="primary.black" area={'main'}>
           <Center>
             <NavigationLogo />
           </Center>
         </GridItem>
-        <GridItem py="8em" bg="green.200" area={'feed'}>
+        <GridItem py="8em" bg="primary.black" area={'feed'}>
           <Stack direction="row" h="calc(100vh - 24em)">
             <Divider
               orientation="vertical"
               borderWidth="2px"
-              borderColor="white"
+              borderColor="primary.white"
             />
             <Feed />
           </Stack>
