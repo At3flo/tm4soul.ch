@@ -14,7 +14,7 @@ const HomePage = () => {
                   "main feed"`}
         gridTemplateRows={'7em calc(100vh - 7em)'}
         gridTemplateColumns={'70vw'}
-        rowGap="1"
+        rowGap="0"
         columnGap="6"
       >
         <GridItem
