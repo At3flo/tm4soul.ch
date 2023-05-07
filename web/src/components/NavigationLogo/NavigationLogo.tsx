@@ -1,5 +1,3 @@
-import { Button } from '@chakra-ui/react'
-
 import { navigate, routes } from '@redwoodjs/router'
 
 import { LogoTM4Soul } from '../Logo/Logo'
@@ -18,7 +16,6 @@ class NavigationLogo extends React.Component {
     this.state = {}
   }
   componentDidMount() {
-    console.log('NavigationLogo mounted')
     const petals: Petal = {
       'petal_right-down': { link: routes.photography() },
       'petal_left-down': { link: 'https://www.tm4soul.ch/' },
@@ -26,12 +23,12 @@ class NavigationLogo extends React.Component {
       'petal_left-up': { link: 'https://www.tm4soul.ch/' },
     }
 
-    // for loop for object petals
+    // loop on every petal SVG part to create hover effect
     for (const [key, value] of Object.entries(petals)) {
       const el = document.getElementById(key)
 
-      el.addEventListener('mouseover', () => (el.style.fill = 'white'))
-      el.addEventListener('mouseleave', () => (el.style.fill = 'red'))
+      el.addEventListener('mouseover', () => (el.style.fill = 'yellow'))
+      el.addEventListener('mouseleave', () => (el.style.fill = 'white'))
 
       // if value.link starts with '/' navigate to that local page
       el.addEventListener('click', () => {
