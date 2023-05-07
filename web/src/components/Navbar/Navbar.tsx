@@ -18,8 +18,12 @@ const Navbar = () => {
           Menu
         </MenuButton>
         <MenuList>
-          <MenuItem>Test 1</MenuItem>
-          <MenuItem>Test 2</MenuItem>
+          <MenuItem as="a" href="/">
+            Home
+          </MenuItem>
+          <MenuItem as="a" href="/photography">
+            Photography
+          </MenuItem>
         </MenuList>
       </Menu>
       <Box display="flex">
