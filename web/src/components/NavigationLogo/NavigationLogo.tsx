@@ -24,6 +24,7 @@ class NavigationLogo extends React.Component {
       // el.addEventListener('mouseover', this.handleButtonClick.bind(this))
       el.addEventListener('mouseover', () => (el.style.fill = 'white'))
       el.addEventListener('mouseleave', () => (el.style.fill = 'red'))
+      // TODO: Add link to route point photography
       el.addEventListener('click', () => (window.location.href = value.link))
     }
   }
