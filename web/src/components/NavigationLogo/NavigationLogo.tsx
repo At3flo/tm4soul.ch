@@ -1,6 +1,6 @@
 import { navigate, routes } from '@redwoodjs/router'
 
-import { LogoTM4Soul } from '../Logo/Logo'
+import { SVGLogoTM4Soul } from './SVGLogoTM4Soul'
 
 type PetalLink = {
   link: string
@@ -44,7 +44,7 @@ class NavigationLogo extends React.Component {
   render() {
     return (
       <>
-        <LogoTM4Soul />
+        <SVGLogoTM4Soul />
       </>
     )
   }

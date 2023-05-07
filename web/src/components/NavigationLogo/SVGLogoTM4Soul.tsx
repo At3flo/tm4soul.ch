@@ -70,4 +70,4 @@ const SvgComponent = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
-export { SvgComponent as LogoTM4Soul }
+export { SvgComponent as SVGLogoTM4Soul }
