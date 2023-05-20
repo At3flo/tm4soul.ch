@@ -19,6 +19,7 @@
     "@emotion/styled": "^11",
     "@redwoodjs/forms": "5.2.1",
     "@redwoodjs/router": "5.2.1",
+    "@redwoodjs/vite": "5.2.1",
     "@redwoodjs/web": "5.2.1",
     "framer-motion": "^9",
     "prop-types": "15.8.1",
