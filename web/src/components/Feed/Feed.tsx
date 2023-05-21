@@ -2,6 +2,12 @@ import { Box, Heading, Stack } from '@chakra-ui/react'
 
 const Feed = () => {
   const rows = []
+  rows.push(
+    <div key="1551616516">
+      <Heading color="primary.white">May 21 at 15:53 PM</Heading>
+      <Box color="primary.white">New post from Facebook</Box>
+    </div>
+  )
   for (let i = 0; i < 3; i++) {
     // note: we are adding a key prop here to allow react to uniquely identify each
     // element in this array. see: https://reactjs.org/docs/lists-and-keys.html
