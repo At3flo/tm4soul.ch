@@ -60,12 +60,9 @@ class NavigationLogo extends React.Component {
     }
   }
 
+  // TODO: vertically center SVG logo
   render() {
-    return (
-      <>
-        <SVGLogoTM4Soul />
-      </>
-    )
+    return <SVGLogoTM4Soul height="80vh" />
   }
 }
 

@@ -12,10 +12,18 @@ const HomePage = () => {
       <MetaTags title="Home" description="Home page" />
 
       <Grid
-        templateAreas={`"nav nav"
-                  "main feed"`}
-        gridTemplateRows={'7em calc(100vh - 7em)'}
-        gridTemplateColumns={'70vw'}
+        templateAreas={{
+          lg: `"nav nav"
+                  "main feed"`,
+          base: `"nav"
+                  "main"
+                  "feed"`,
+        }}
+        gridTemplateRows={{
+          lg: '7em calc(100vh - 7em)',
+          base: '7em 0.1fr 0.9fr',
+        }}
+        gridTemplateColumns={{ lg: '1.3fr 0.7fr', base: '1fr' }}
         rowGap="0"
         columnGap="0"
       >
