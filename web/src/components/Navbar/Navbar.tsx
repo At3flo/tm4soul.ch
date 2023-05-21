@@ -7,6 +7,7 @@ import {
   MenuItem,
   Heading,
   Box,
+  Link,
 } from '@chakra-ui/react'
 import { BsFacebook, BsInstagram } from 'react-icons/bs'
 
@@ -27,12 +28,24 @@ const Navbar = () => {
         </MenuList>
       </Menu>
       <Box display="flex">
-        <Heading p="2" size="2xl">
-          <BsFacebook />
-        </Heading>
-        <Heading p="2" size="2xl">
-          <BsInstagram />
-        </Heading>
+        <Link
+          href="https://www.facebook.com/TM4Soul/"
+          isExternal
+          _hover={{ color: 'primary.accent' }}
+        >
+          <Heading p="2" size="2xl">
+            <BsFacebook />
+          </Heading>
+        </Link>
+        <Link
+          href="https://www.instagram.com/tm_4soul/"
+          isExternal
+          _hover={{ color: 'primary.accent' }}
+        >
+          <Heading p="2" size="2xl">
+            <BsInstagram />
+          </Heading>
+        </Link>
       </Box>
     </>
   )

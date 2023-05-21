@@ -6,9 +6,11 @@ import { extendTheme } from '@chakra-ui/react'
 export const theme = extendTheme({
   colors: {
     primary: {
-      gray: 'gray',
+      gray: '#898d97ff',
       white: '#fff',
       black: '#000',
+      main: '#9A38B5FF',
+      accent: '#ff7b4bff',
     },
   },
 })

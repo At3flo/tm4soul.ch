@@ -1,3 +1,5 @@
+import { theme } from 'config/chakra.config'
+
 import { navigate, routes } from '@redwoodjs/router'
 
 import { SVGLogoTM4Soul } from './SVGLogoTM4Soul'
@@ -28,14 +30,23 @@ class NavigationLogo extends React.Component {
       const el = document.getElementById(key)
 
       if (value.link === null) {
-        el.addEventListener('mouseover', () => (el.style.fill = 'gray'))
-        el.addEventListener('mouseleave', () => (el.style.fill = 'white'))
+        el.addEventListener(
+          'mouseover',
+          () => (el.style.fill = theme.colors.primary.gray)
+        )
+        el.addEventListener(
+          'mouseleave',
+          () => (el.style.fill = theme.colors.primary.white)
+        )
       } else {
         el.addEventListener('mouseover', () => {
-          el.style.fill = 'yellow'
+          el.style.fill = theme.colors.primary.main
           el.style.cursor = 'pointer'
         })
-        el.addEventListener('mouseleave', () => (el.style.fill = 'white'))
+        el.addEventListener(
+          'mouseleave',
+          () => (el.style.fill = theme.colors.primary.white)
+        )
 
         // if value.link starts with '/' navigate to that local page
         el.addEventListener('click', () => {
