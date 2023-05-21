@@ -20,8 +20,7 @@ const HomePage = () => {
         columnGap="0"
       >
         <GridItem
-          p="2"
-          bg="primary.gray"
+          bg="primary.black"
           area={'nav'}
           display="flex"
           alignItems="center"
