@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react'
 import { theme } from 'config/chakra.config'
 
@@ -11,17 +13,23 @@ import './index.css'
 
 const extendedTheme = extendTheme(theme)
 
-const App = () => (
-  <FatalErrorBoundary page={FatalErrorPage}>
-    <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
-      <ColorModeScript />
-      <ChakraProvider theme={extendedTheme}>
-        <RedwoodApolloProvider>
-          <Routes />
-        </RedwoodApolloProvider>
-      </ChakraProvider>
-    </RedwoodProvider>
-  </FatalErrorBoundary>
-)
+const App = () => {
+  useEffect(() => {
+    document.body.style.backgroundColor = theme.colors.primary.black
+  })
+
+  return (
+    <FatalErrorBoundary page={FatalErrorPage}>
+      <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
+        <ColorModeScript />
+        <ChakraProvider theme={extendedTheme}>
+          <RedwoodApolloProvider>
+            <Routes />
+          </RedwoodApolloProvider>
+        </ChakraProvider>
+      </RedwoodProvider>
+    </FatalErrorBoundary>
+  )
+}
 
 export default App
