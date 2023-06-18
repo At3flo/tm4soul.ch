@@ -41,8 +41,8 @@ const HomePage = () => {
             <NavigationLogo />
           </Center>
         </GridItem>
-        <GridItem py="8em" bg="primary.black" area={'feed'}>
-          <Stack direction="row" h="calc(100vh - 24em)">
+        <GridItem py="5em" bg="primary.black" area={'feed'}>
+          <Stack direction="row" h="calc(100vh - 16em)">
             <Divider
               orientation="vertical"
               borderWidth="2px"

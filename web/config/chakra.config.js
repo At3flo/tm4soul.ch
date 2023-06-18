@@ -11,6 +11,7 @@ export const theme = extendTheme({
       black: '#000',
       main: '#9A38B5FF',
       accent: '#ff7b4bff',
+      link: 'var(--chakra-colors-primary-accent)',
     },
   },
 })
