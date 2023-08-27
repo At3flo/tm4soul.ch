@@ -1,7 +1,16 @@
 // This object will be used to override Chakra-UI theme defaults.
 // See https://chakra-ui.com/docs/styled-system/theming/theme for theming options
 
-import { extendTheme } from '@chakra-ui/react'
+import { extendTheme, defineStyle, defineStyleConfig } from '@chakra-ui/react'
+
+const brandPrimary = defineStyle({
+  border: '1px solid', // change the appearance of the border
+  backgroundColor: 'primary.gray',
+})
+
+export const badgeTheme = defineStyleConfig({
+  variants: { brandPrimary },
+})
 
 export const theme = extendTheme({
   colors: {
@@ -14,4 +23,5 @@ export const theme = extendTheme({
       link: 'var(--chakra-colors-primary-accent)',
     },
   },
+  components: { Badge: badgeTheme },
 })

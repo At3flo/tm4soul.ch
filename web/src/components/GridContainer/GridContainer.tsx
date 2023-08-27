@@ -1,5 +1,6 @@
-import { Grid, GridItem, Stack, Divider } from '@chakra-ui/react';
-import Navbar from '../Navbar/Navbar';
+import { Grid, GridItem, Stack, Divider } from '@chakra-ui/react'
+
+import Navbar from '../Navbar/Navbar'
 
 const GridContainer = ({ mainComponent, sideComponent }) => {
   return (
@@ -28,7 +29,13 @@ const GridContainer = ({ mainComponent, sideComponent }) => {
       >
         <Navbar />
       </GridItem>
-      <GridItem bg="primary.black" area={'main'} display="flex" alignItems="center" justifyContent="center">
+      <GridItem
+        bg="primary.black"
+        area={'main'}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
         {mainComponent}
       </GridItem>
       <GridItem bg="primary.black" area={'feed'}>
@@ -42,7 +49,7 @@ const GridContainer = ({ mainComponent, sideComponent }) => {
         </Stack>
       </GridItem>
     </Grid>
-  );
-};
+  )
+}
 
-export default GridContainer;
+export default GridContainer

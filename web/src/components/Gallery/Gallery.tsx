@@ -1,4 +1,4 @@
-import { Badge, Box, Image } from '@chakra-ui/react'
+import { Badge, Box, Image, useColorModeValue } from '@chakra-ui/react'
 
 const Gallery = ({ tags }) => {
   const imageCount = Math.floor(Math.random() * (25 - 8 + 1)) + 8 // Total number of images
@@ -33,6 +33,8 @@ const Gallery = ({ tags }) => {
         flexDirection: 'column',
         alignItems: 'flex-start',
         height: '100%',
+        paddingLeft: '100px',
+        paddingRight: '100px',
       }}
     >
       <div
@@ -41,15 +43,14 @@ const Gallery = ({ tags }) => {
           marginBottom: '2em',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'flex-start',
+          alignItems: 'center',
         }}
       >
         <div style={{ marginBottom: '1em' }}>
           {tags.map((tag, index) => (
             <Badge
               key={index}
-              colorScheme="green"
-              variant="solid"
+              variant="brandPrimary"
               mr={2}
               style={{ marginBottom: '0' }}
             >
@@ -58,7 +59,7 @@ const Gallery = ({ tags }) => {
           ))}
         </div>
 
-        <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gridGap="1em">
+        <Box display="grid" gridTemplateColumns="repeat(6, 1fr)" gridGap="1em">
           {images}
         </Box>
       </div>
