@@ -34,7 +34,7 @@ const Navbar = () => {
               Home
             </MenuItem>
             <MenuItem as="a" href="/photography">
-              Photography
+              Fotografie
             </MenuItem>
           </MenuList>
         </Menu>

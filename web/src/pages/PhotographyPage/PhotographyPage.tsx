@@ -1,28 +1,38 @@
-import { Grid, GridItem, Center, Stack, Divider, Heading } from '@chakra-ui/react'
+import { Center, Divider, Grid, GridItem, Stack } from '@chakra-ui/react'
 
 import { MetaTags } from '@redwoodjs/web'
 
 import Feed from 'src/components/Feed/Feed'
 import Navbar from 'src/components/Navbar/Navbar'
-import NavigationLogo from 'src/components/NavigationLogo/NavigationLogo'
+import { Heading } from '@chakra-ui/react';
+import { Text } from '@chakra-ui/react';
+import WordCloud from 'src/components/WordCloud/WordCloud';
+import CategoryDescription from 'src/components/CategoryDescription/CategoryDescription';
+
 
 const PhotographyPage = () => {
   return (
     <>
       <MetaTags title="Photography" description="Photography page" />
 
-      {/* TODO: need to be refactored to avoid DRY with NavBar */}
       <Grid
-        templateAreas={`"nav nav"
-                  "main feed"`}
-        gridTemplateRows={'7em calc(100vh - 7em)'}
-        gridTemplateColumns={'70vw'}
+        templateAreas={{
+          lg: `"nav nav"
+                  "main feed"`,
+          base: `"nav"
+                  "main"
+                  "feed"`,
+        }}
+        gridTemplateRows={{
+          lg: '7em calc(100vh - 7em)',
+          base: '7em 0.1fr 0.9fr',
+        }}
+        gridTemplateColumns={{ lg: '1.3fr 0.7fr', base: '1fr' }}
         rowGap="0"
         columnGap="0"
       >
         <GridItem
-          p="2"
-          bg="primary.gray"
+          bg="primary.black"
           area={'nav'}
           display="flex"
           alignItems="center"
@@ -30,19 +40,17 @@ const PhotographyPage = () => {
         >
           <Navbar />
         </GridItem>
-        <GridItem bg="primary.black" area={'main'}>
-          <Center>
-            <Heading color={'primary.white'}>Photography</Heading>
-          </Center>
+        <GridItem bg="primary.black" area={'main'} display="flex" alignItems="center" justifyContent="center">
+          <WordCloud />
         </GridItem>
-        <GridItem py="8em" bg="primary.black" area={'feed'}>
-          <Stack direction="row" h="calc(100vh - 24em)">
+        <GridItem bg="primary.black" area={'feed'}>
+          <Stack direction="row" h="calc(100vh - 16em)">
             <Divider
               orientation="vertical"
               borderWidth="2px"
               borderColor="primary.white"
             />
-            <Feed />
+            <CategoryDescription />
           </Stack>
         </GridItem>
       </Grid>
