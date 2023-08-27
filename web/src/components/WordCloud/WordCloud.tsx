@@ -1,4 +1,5 @@
 import { Text } from '@chakra-ui/react';
+import { Link, routes } from '@redwoodjs/router';
 
 const WordCloud = () => {
 
@@ -35,15 +36,20 @@ const WordCloud = () => {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', alignItems: 'center', paddingLeft: '10px', paddingRight: '10px' }}>
       {shuffledItems.map((item) => (
+        <Link
+        to={routes.gallery()}
+        key={item.Tag}
+        style={{ textDecoration: 'none' }}
+      >
         <Text
-          key={item.Tag}
-          fontSize={`${4 - (parseInt(item.Weight) * 0.5)}em`} // Decrease font size by a half step
+          fontSize={`${4 - (parseInt(item.Weight) * 0.5)}em`}
           fontWeight={700 - parseInt(item.Weight) * 100}
           style={{ margin: '0', padding: '5px' }}
-          _hover={{ color: 'white' }} // Apply hover effect
+          _hover={{ color: 'white' }}
         >
           {item.Tag}
         </Text>
+      </Link>
       ))}
     </div>
   )
