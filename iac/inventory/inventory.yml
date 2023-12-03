@@ -1,0 +1,13 @@
+all:
+  children:
+    servers:
+      hosts:
+        t4s-ctb-vps-eros:
+          ansible_host: 173.249.10.127
+          ansible_port: 8822
+          ansible_connection: ssh
+          ansible_ssh_private_key_file: "~/.ssh/id_t4s_adm"
+          ansible_ssh_extra_args: "-o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+          ansible_user: "{{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='username')[0] }}"
+          ansible_ssh_pass: "{{ lookup('bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7') }}"
+          ansible_become_password: "{{ lookup('bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7') }}"

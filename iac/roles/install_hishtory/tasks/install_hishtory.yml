@@ -1,0 +1,46 @@
+- name: Check if hiSHtory is already installed for user {{ item }}
+  ansible.builtin.stat:
+    path: "/home/{{ item }}/.hishtory"
+  register: install_hishtory_presence
+
+- name: Ensure hiSHtory installation's dir is present before moving forward for user {{ item }}
+  ansible.builtin.file:
+    path: /home/{{ item }}/.local/share/applications/hishtory
+    state: directory
+    mode: "0755"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  when: not install_hishtory_presence.stat.exists
+
+- name: Remove old hiSHtory executable in tmp before updating for user {{ item }}
+  ansible.builtin.file:
+    state: absent
+    path: /tmp/{{ hishtory_tmp_file }}
+  loop:
+    - "hishtory-client"
+    - "hishtory-client.intoto.jsonl"
+  loop_control:
+    loop_var: hishtory_tmp_file
+
+- name: Remove old hiSHtory executable before updating for user {{ item }}
+  ansible.builtin.file:
+    state: absent
+    path: /home/{{ item }}/.local/share/applications/hishtory/hishtory-linux-{{ install_hishtory_architecture }}
+
+- name: Retrieve hiSHtory binary for user {{ item }}
+  ansible.builtin.get_url:
+    url: |
+      https://github.com/ddworken/hishtory/releases/download/{{ hishtory_version }}/hishtory-linux-{{ install_hishtory_architecture }}
+    dest: /tmp/hishtory-client
+    mode: '0755'
+    owner: "root"
+    group: "root"
+
+- name: (Re)install hishtory for user {{ item }}
+  tags:
+    - skip_ansible_lint
+  ansible.builtin.shell:
+    cmd: /tmp/hishtory-client install --offline
+  become_user: "{{ item }}"
+  register: install_hishtory_installation
+  changed_when: install_hishtory_installation.rc != 0

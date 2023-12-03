@@ -1,0 +1,43 @@
+---
+- name: Install Prommanager
+  tags:
+    - system_monitoring
+    - install_prommanager
+    - update_prommanager
+  ansible.builtin.import_role:
+    name: prommanager/roles/update_prommanager
+
+- name: Prommanager - Update configuration
+  tags:
+    - system_monitoring
+    - install_prommanager
+    - update_prommanager_configuration
+  ansible.builtin.import_role:
+    name: prommanager/roles/update_configuration
+
+- name: Prommanager - Update Services
+  tags:
+    - system_monitoring
+    - install_prommanager
+    - update_prommanager_services
+  ansible.builtin.import_role:
+    name: prommanager/roles/update_services
+
+- name: Prommanager - Get versions
+  tags:
+    - system_monitoring
+    - install_prommanager
+    - update_prommanager_services
+    - prommanager_status
+  ansible.builtin.import_role:
+    name: prommanager/roles/get_services_versions
+
+- name: Prommanager - Get status
+  tags:
+    - system_monitoring
+    - install_prommanager
+    - update_prommanager_configuration
+    - update_prommanager_services
+    - prommanager_status
+  ansible.builtin.import_role:
+    name: prommanager/roles/get_status

@@ -19,3 +19,6 @@ api/src/lib/generateGraphiQLHeader.*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+*.env
+!*.enc.env
+id_t4s*

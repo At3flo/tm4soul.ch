@@ -1,0 +1,197 @@
+- name: Ensure group "admin" exists
+  tags: update_users
+  ansible.builtin.group:
+    name: admin
+    state: present
+
+- name: Ensure admin group to have sudo rights
+  tags: update_users
+  community.general.sudoers:
+    name: admin
+    state: present
+    group: admin
+    nopassword: false
+    commands: (ALL:ALL) ALL
+
+- name: Ensure owngroup for each user exists
+  tags: update_users
+  ansible.builtin.group:
+    name: "{{ item.username }}"
+    state: present
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: Ensure groups policy for each user exists
+  tags: update_users
+  ansible.builtin.group:
+    name: "{{ item.groups }}"
+    state: present
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: Update users properties based on host_vars list
+  tags: update_users
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    comment: "{{ item.fullname }}"
+    password: "{{ item.password | password_hash('sha512', 'passlib') }}"
+    groups: "{{ item.groups }}"
+    group: "{{ item.username }}"
+    shell: /bin/bash
+    append: true
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: Define legitimate users
+  tags:
+    - update_users
+    - skip_ansible_lint
+  ansible.builtin.set_fact:
+    users_allowed: "{{ users | community.general.json_query('[*].username') + system_users}}"
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: Retrieve all installed users from uid 1000 and above
+  tags:
+    - update_users
+    - skip_ansible_lint
+  ansible.builtin.shell: "getent passwd | awk -F: '$3 > 999 {print $1}'"
+  register: users_installed
+  changed_when: users_installed.rc != 0
+
+- name: Remove dead users account
+  tags: update_users
+  ansible.builtin.user:
+    name: "{{ item }}"
+    state: absent
+    remove: true
+  when: item not in users_allowed
+  with_items: "{{ users_installed.stdout_lines }}"
+
+- name: Remove dead users group
+  tags: update_users
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: absent
+  when: item not in users_allowed
+  with_items: "{{ users_installed.stdout_lines }}"
+
+- name: Update MOTD banner
+  tags: update_motd
+  ansible.builtin.copy:
+    dest: "/etc/motd"
+    mode: "0644"
+    content: "{{ lookup('file', motd_banner_path) }}\n\n"
+
+- name: Upgrade server
+  tags: update_machine
+  ansible.builtin.apt:
+    clean: true
+    update_cache: true
+    upgrade: "yes"
+
+- name: Install basic list of packages
+  tags:
+    - update_machine
+    - skip_ansible_lint
+  ansible.builtin.apt:
+    state: latest
+    pkg:
+      - ncdu
+      - mtr-tiny
+      - htop
+      - tmux
+      - net-tools
+      - apt-transport-https
+      - nano
+      - curl
+      - httpie
+      - rsync
+      - netcat
+      - bash-completion
+      - acl # Gives Ansible rights to update /tmp files on the fly
+      - sshpass
+      - sudo
+      - apt-utils
+      - bc # floating point calculations
+      - cloud-utils # allow disk resizing for VMs
+      - pv # progress bar calculation
+
+- name: Download Webmin key
+  tags:
+    - update_machine
+    - webmin
+  ansible.builtin.get_url:
+    url: http://www.webmin.com/jcameron-key.asc
+    dest: /etc/apt/trusted.gpg.d/jenkins.asc
+    mode: "0644"
+    force: true
+
+- name: Add Webmin repositories
+  tags:
+    - update_machine
+    - webmin
+  ansible.builtin.apt_repository:
+    repo: deb http://download.webmin.com/download/repository sarge contrib
+    state: present
+
+- name: Install Webmin and prerequisites
+  tags:
+    - update_machine
+    - skip_ansible_lint
+    - webmin
+  ansible.builtin.apt:
+    state: latest
+    pkg:
+      - webmin
+      - libauthen-oath-perl
+
+- name: Modify SSH Port
+  tags: update_ssh_port
+  ansible.builtin.lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regex: "^(#)?{{ item.key }}"
+    line: "{{ item.key }} {{ item.value }}"
+    state: present
+  loop:
+    - { key: "Port", value: "{{ ssh_port }}" }
+
+- name: Disable SSHd socket-based activation (Ubuntu 22.10 and later)
+  tags: update_ssh_port
+  ansible.builtin.systemd:
+    name: ssh.socket
+    state: stopped
+    enabled: false
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release | float > 22.04
+
+- name: Delete socket conf file
+  tags: update_ssh_port
+  ansible.builtin.file:
+    path: "/etc/systemd/system/ssh.service.d/00-socket.conf"
+    state: absent
+
+- name: Enable old SSHd service-based activation (Ubuntu 22.10 and later)
+  tags: update_ssh_port
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: ssh.service
+    state: started
+    enabled: true
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release | float > 22.04
+
+- name: Restart SSHD
+  tags: update_ssh_port
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+  async: 15
+
+- name: Change ansible_port in ansible inventory for next tasks to 8822
+  tags: update_ssh_port
+  ansible.builtin.set_fact:
+    # noqa: var-naming[no-role-prefix]
+    ansible_port: "{{ ssh_port }}"
+
+- name: Unconditionally reboot the machine with all defaults
+  tags: reboot_machine
+  ansible.builtin.reboot:

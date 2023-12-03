@@ -1,0 +1,566 @@
+- name: Update root properties based on host_vars list
+  tags: secure_root_access
+  ansible.builtin.user:
+    name: "root"
+    group: "root"
+    password: "{{ item.password | password_hash('sha512', 'passlib') }}"
+    shell: /sbin/nologin
+  with_items: "{{ root_user }}"
+  no_log: true
+
+- name: Disabling root access via any console device (tty)
+  tags: secure_root_access
+  ansible.builtin.copy:
+    dest: /etc/securetty
+    owner: root
+    group: root
+    mode: '0644'
+    content: ""
+
+- name: Hardening sshd file
+  tags:
+    - secure_root_access
+    - secure_ssh
+  ansible.builtin.lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regex: "^(#)?{{ item.key }}"
+    line: "{{ item.key }} {{ item.value }}"
+    state: present
+  loop:
+    - { key: "PermitRootLogin", value: "no" }
+    - { key: "HostbasedAuthentication", value: "no" }
+    - { key: "IgnoreRhosts", value: "yes" }
+
+- name: Restart SSHD
+  tags: secure_root_access
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+
+- name: Secure Webmin remove old permissions files
+  tags:
+    - secure_root_access
+    - update_users
+    - webmin
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/webmin/miniserv.users
+    - /etc/webmin/webmin.acl
+
+- name: Secure Webmin to be accessed only from restricted users list
+  tags:
+    - secure_root_access
+    - update_users
+    - webmin
+  ansible.builtin.lineinfile:
+    path: "/etc/webmin/miniserv.users"
+    create: true
+    owner: root
+    group: bin
+    mode: "0600"
+    line: "{{ item.username }}:x::::::::0:0:totp:{{ item.totp[0] }}:"
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: Secure Webmin to give ACL to restricted users list
+  tags:
+    - secure_root_access
+    - update_users
+    - webmin
+  ansible.builtin.lineinfile:
+    path: "/etc/webmin/webmin.acl"
+    create: true
+    owner: root
+    group: root
+    mode: "0600"
+    line: "{{ item.username }}:*"
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: Create empty users list var for auto-logout
+  tags:
+    - secure_root_access
+    - update_users
+    - webmin
+  ansible.builtin.set_fact:
+    autologout_users_list: []
+
+- name: Populate users list for auto-logout
+  tags:
+    - secure_root_access
+    - update_users
+    - webmin
+  ansible.builtin.set_fact:
+    autologout_users_list: "{{ autologout_users_list + [item.username] }}"
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: Secure Webmin Force 2FA and auto-logout
+  tags:
+    - secure_root_access
+    - update_users
+    - webmin
+  ansible.builtin.lineinfile:
+    path: "/etc/webmin/miniserv.conf"
+    regex: "^(#)?{{ item.key }}"
+    line: "{{ item.key }}={{ item.value }}"
+    state: present
+  loop:
+    - { key: "twofactor_provider", value: "totp" }
+    - { key: "logouttimes", value: "{{ autologout_users_list | join('=5 ') }}=5" }
+  no_log: true
+
+- name: Restart service Webmin, in all cases
+  tags:
+    - secure_root_access
+    - update_users
+    - webmin
+  ansible.builtin.service:
+    name: webmin
+    state: restarted
+
+- name: Install UFW and prerequisites
+  tags:
+    - install_fw
+    - skip_ansible_lint
+  ansible.builtin.apt:
+    state: latest
+    pkg:
+      - ufw
+
+- name: Deny incoming trafic by default
+  tags:
+    - install_fw
+  community.general.ufw:
+    default: deny
+    direction: incoming
+
+- name: Allow outgoing trafic by default
+  tags:
+    - install_fw
+  community.general.ufw:
+    default: allow
+    direction: outgoing
+
+- name: Disable UFW
+  tags:
+    - install_fw
+    - update_fw_ports
+    - update_ssh_port
+    - secure_ssh
+    - install_prommanager
+  community.general.ufw:
+    state: disabled
+
+- name: Retrieve actual FW rules
+  tags:
+    - install_fw
+    - update_fw_ports
+    - update_ssh_port
+    - skip_ansible_lint
+    - secure_ssh
+    - install_prommanager
+  ansible.builtin.shell: "ufw show added"
+  register: rules_deleted
+  changed_when: rules_deleted.rc != 0
+
+- name: Print rules that will be deleted
+  tags:
+    - install_fw
+    - update_fw_ports
+    - update_ssh_port
+    - skip_ansible_lint
+    - secure_ssh
+    - install_prommanager
+  ansible.builtin.debug:
+    msg: "{{ rules_deleted.stdout }}"
+
+- name: Remove all rules defined by users
+  tags:
+    - install_fw
+    - update_fw_ports
+    - update_ssh_port
+    - skip_ansible_lint
+    - secure_ssh
+    - install_prommanager
+  ansible.builtin.shell: "ufw show added | grep -v \"ufw status\" | sudo awk '{ gsub(\"ufw\",\"ufw delete\",$0); system($0)}'"
+
+- name: Allow SSH specific port
+  tags:
+    - install_fw
+    - update_fw_ports
+    - update_ssh_port
+    - secure_ssh
+  community.general.ufw:
+    rule: allow
+    direction: in
+    port: '{{ ssh_port }}'
+    proto: tcp
+
+- name: Allow User defined FW ports based on fw_ports host_vars
+  tags:
+    - install_fw
+    - update_fw_ports
+    - update_ssh_port
+    - secure_ssh
+    - install_prommanager
+  community.general.ufw:
+    rule: allow
+    direction: in
+    port: '{{ item.port }}'
+    proto: '{{ item.protocol }}'
+  with_items: "{{ fw_ports }}"
+
+- name: Enable UFW
+  tags:
+    - install_fw
+    - update_fw_ports
+    - update_ssh_port
+    - secure_ssh
+    - install_prommanager
+  community.general.ufw:
+    state: enabled
+
+- name: Block SSH connection for normal users
+  tags: secure_ssh
+  ansible.builtin.lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regex: "^(#)?{{ item.key }}"
+    line: "{{ item.key }} {{ item.value }}"
+    state: present
+  loop:
+    - { key: "PubkeyAuthentication", value: "yes" }
+    - { key: "PasswordAuthentication", value: "no" }
+    - { key: "PermitEmptyPasswords", value: "no" }
+
+- name: Restrict password authentication through SSH only for admin users
+  tags: secure_ssh
+  ansible.builtin.blockinfile:
+    path: /etc/ssh/sshd_config
+    insertbefore: EOF # Beginning of the file
+    block: |
+        Match Group admin
+          PasswordAuthentication no
+          PubkeyAuthentication yes
+    backup: true
+    validate: /usr/sbin/sshd -T -f %s
+
+- name: Retrieve authorized keys locally from Bitwarden based on host_vars users list
+  tags:
+    - secure_ssh
+    - update_users
+  ansible.builtin.debug:
+    msg: "{{ item.ssh_key }}"
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: Copy authorized keys on the server
+  tags:
+    - secure_ssh
+    - update_users
+  ansible.posix.authorized_key:
+    user: "{{ item.username }}"
+    state: present
+    key: "{{ lookup('file', 'id_t4s_adm.pub') }}"
+    exclusive: true
+  loop: "{{ users }}"
+  no_log: true
+
+- name: Define legitimate users
+  tags:
+    - secure_ssh
+    - update_users
+    - skip_ansible_lint
+  ansible.builtin.set_fact:
+    users_allowed: "{{ users | community.general.json_query('[*].username') + system_users}}"
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: Retrieve all installed users from uid 1000 and above
+  tags:
+    - secure_ssh
+    - update_users
+    - skip_ansible_lint
+  ansible.builtin.shell: "getent passwd | awk -F: '$3 > 999 {print $1}'"
+  register: users_installed
+  changed_when: users_installed.rc != 0
+
+- name: Remove dead users SSH Keys
+  tags:
+    - secure_ssh
+    - update_users
+  ansible.posix.authorized_key:
+    user: "{{ item }}"
+    state: absent
+    key: "{{ lookup('file', 'id_t4s_adm.pub') }}"
+  when: item not in users_allowed
+  with_items: "{{ users_installed.stdout_lines }}"
+
+- name: Ensure auto-logout
+  tags:
+    - secure_ssh
+  ansible.builtin.blockinfile:
+    path: /etc/profile.d/autologout.sh
+    insertbefore: EOF # Beginning of the file
+    block: |
+        TMOUT=300
+        readonly TMOUT
+        export TMOUT
+    create: true
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Restart SSHD
+  tags:
+    - secure_ssh
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+
+- name: Install unattended-upgrades and prerequisites
+  tags:
+    - install_auto_security_updates
+    - skip_ansible_lint
+  ansible.builtin.apt:
+    state: latest
+    pkg:
+      - unattended-upgrades
+
+- name: Define period for automated security updates
+  tags:
+    - install_auto_security_updates
+  ansible.builtin.lineinfile:
+    path: "/etc/apt/apt.conf.d/10periodic"
+    regex: "^(#)?{{ item.key }}"
+    line: "{{ item.key }} {{ item.value }}"
+    state: present
+    backup: true
+    create: true
+    mode: 0644
+  loop:
+    - { key: "APT::Periodic::Update-Package-Lists", value: "\"1\";" }
+    - { key: "APT::Periodic::Download-Upgradeable-Packages", value: "\"1\";" }
+    - { key: "APT::Periodic::AutocleanInterval", value: "\"7\";" }
+    - { key: "APT::Periodic::Unattended-Upgrade", value: "\"1\";" }
+
+- name: Define which upgrades to apply for automated security updates
+  tags:
+    - install_auto_security_updates
+  ansible.builtin.lineinfile:
+    path: "/etc/apt/apt.conf.d/50unattended-upgrades"
+    regex: "^(.*\/\/)?.*{{ item.key }}\";"
+    line: "{{ item.comment }}      \"{{ item.line_substitution }}\";"
+    state: present
+    backup: true
+    create: true
+    mode: 0644
+  loop:
+    - { key: "distro_codename}-security", comment: "  ", line_substitution: "${distro_id}:${distro_codename}-security" }
+    - { key: "distro_codename}-apps-security", comment: "  ", line_substitution: "${distro_id}ESMApps:${distro_codename}-apps-security" }
+    - { key: "distro_codename}-infra-security", comment: "  ", line_substitution: "${distro_id}ESM:${distro_codename}-infra-security" }
+    - { key: "distro_codename}", comment: "\/\/", line_substitution: "${distro_id}:${distro_codename}"}
+    - { key: "distro_codename}-updates", comment: "\/\/", line_substitution: "${distro_id}:${distro_codename}-updates" }
+    - { key: "distro_codename}-proposed", comment: "\/\/", line_substitution: "${distro_id}:${distro_codename}-proposed" }
+    - { key: "distro_codename}-backports", comment: "\/\/", line_substitution: "${distro_id}:${distro_codename}-backports" }
+
+- name: Install Postfix and prerequisites
+  tags:
+    - install_postfix
+    - skip_ansible_lint
+  ansible.builtin.apt:
+    state: latest
+    pkg:
+      - postfix
+      - libsasl2-modules
+
+- name: Postfix - configure SMTP relay
+  tags:
+    - install_postfix
+  ansible.builtin.lineinfile:
+    path: "/etc/postfix/main.cf"
+    regex: "^(#)?{{ item.key }}"
+    line: "{{ item.key }} = {{ item.value }}"
+    state: present
+  loop:
+    - { key: "myhostname", value: "{{ smtp_fqdn }}" }
+    - { key: "mydestination", value: "{{ ansible_hostname }}, localhost.localdomain, localhost" }
+    - { key: "relayhost", value: "{{ smtp_relayhost }}" }
+    - { key: "smtp_sasl_auth_enable", value: "yes" }
+    - { key: "smtp_sasl_security_options", value: "noanonymous" }
+    - { key: "smtp_sasl_password_maps", value: "hash:/etc/postfix/sasl/sasl_passwd" }
+    - { key: "smtp_tls_security_level", value: "may" }
+    - { key: "smtp_tls_CAfile", value: "/etc/ssl/certs/ca-certificates.crt" }
+
+- name: Postfix - configure SMTP credentials
+  tags:
+    - install_postfix
+  ansible.builtin.copy:
+    dest: "/etc/postfix/sasl/sasl_passwd"
+    content: |
+      {{ smtp_relayhost }} {{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='username')[0] }}:{{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='password')[0] }}
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Postfix - query Postfix lookup tables
+  tags:
+    - install_postfix
+  ansible.builtin.command: postmap /etc/postfix/sasl/sasl_passwd
+  register: postmap_cmd
+  changed_when: postmap_cmd.rc == 0
+
+- name: Restart Postfix
+  tags:
+    - install_postfix
+  ansible.builtin.service:
+    name: postfix
+    state: restarted
+
+- name: "Postfix - send test email"
+  tags:
+    - install_postfix
+    - skip_ansible_lint
+  ansible.builtin.shell: "echo \"From:{{ ansible_hostname }}@{{ smtp_fqdn }}\nSubject: Mail Delivery Test\nThis is the test e-mail body\" | sendmail -v {{ alert_email_sent_to }}"
+  register: email_sent
+  changed_when: email_sent.rc == 0
+
+- name: Postfix - display warning message for recipients
+  tags:
+    - install_postfix
+  ansible.builtin.debug:
+    msg: "PLEASE VERIFY THAT FOLLOWING RECIPIENT RECEIVED IT: {{ alert_email_sent_to }}"
+  changed_when: email_sent.rc == 0
+
+- name: Install OSSEC HIDS prerequisites
+  tags:
+    - install_hids
+    - skip_ansible_lint
+  ansible.builtin.apt:
+    state: latest
+    pkg:
+      - inotify-tools
+      - build-essential
+      - make
+      - zlib1g-dev
+      - libpcre2-dev
+      - libevent-dev
+      - libssl-dev
+      - libsystemd-dev
+
+- name: Ensure OSSEC HIDS installation's dir is present
+  tags:
+    - install_hids
+  ansible.builtin.file:
+    path: /opt/ossec
+    state: directory
+    mode: "0755"
+
+- name: HIDS - Check if OSSEC is already installed
+  tags:
+    - install_hids
+  ansible.builtin.stat:
+    path: "/opt/ossec/ossec-hids-{{ ossec_version }}"
+  register: hids_installed
+
+- name: Download & extract OSSEC HIDS Source Code
+  tags:
+    - install_hids
+  ansible.builtin.unarchive:
+    src: "https://github.com/ossec/ossec-hids/archive/{{ ossec_version }}.tar.gz"
+    dest: "/opt/ossec/"
+    remote_src: true
+  when: not hids_installed.stat.exists
+
+- name: HIDS - init config file
+  tags:
+    - install_hids
+  ansible.builtin.copy:
+    remote_src: true
+    src: /opt/ossec/ossec-hids-{{ ossec_version }}/etc/preloaded-vars.conf.example
+    dest: /opt/ossec/ossec-hids-{{ ossec_version }}/etc/preloaded-vars.conf
+    mode: "0664"
+  when: not hids_installed.stat.exists
+
+- name: HIDS - configure installation file
+  tags:
+    - install_hids
+  ansible.builtin.lineinfile:
+    path: "/opt/ossec/ossec-hids-{{ ossec_version }}/etc/preloaded-vars.conf"
+    regex: "^(#)?{{ item.key }}"
+    line: "{{ item.key }}=\"{{ item.value }}\""
+    state: present
+  loop:
+    - { key: "USER_LANGUAGE", value: "en" }
+    - { key: "USER_NO_STOP", value: "y" }
+    - { key: "USER_INSTALL_TYPE", value: "local" }
+    - { key: "USER_DIR", value: "/var/ossec" }
+    - { key: "USER_ENABLE_EMAIL", value: "y" }
+    - { key: "USER_EMAIL_ADDRESS", value: "{{ alert_email_sent_to }}" }
+    - { key: "USER_EMAIL_SMTP", value: "127.0.0.1" }
+    - { key: "USER_ENABLE_SYSCHECK", value: "y" }
+    - { key: "USER_ENABLE_ROOTCHECK", value: "y" }
+    - { key: "USER_ENABLE_ACTIVE_RESPONSE", value: "y" }
+    - { key: "USER_ENABLE_FIREWALL_RESPONSE", value: "y" }
+    - { key: "USER_WHITE_LIST", value: "192.168.10.0/24" }
+  when: not hids_installed.stat.exists
+
+- name: "HIDS - install OSSEC"
+  tags:
+    - install_hids
+    - skip_ansible_lint
+  ansible.builtin.shell: "PCRE2_SYSTEM=yes /opt/ossec/ossec-hids-{{ ossec_version }}/install.sh"
+  timeout: 300
+  when: not hids_installed.stat.exists
+  register: hids_install
+  changed_when: hids_install.rc == 0
+
+- name: HIDS - post-install configuration Email Alerts
+  tags:
+    - install_hids
+  ansible.builtin.lineinfile:
+    path: "/var/ossec/etc/ossec.conf"
+    regex: "^.*<{{ item.key }}>"
+    line: "    <{{ item.key }}>{{ item.value }}</{{ item.key }}>"
+    backup: true
+  loop:
+    - { key: "email_from", value: "{{ ansible_hostname }}@{{ smtp_fqdn }}" }
+    - { key: "log_alert_level", value: "3" }
+    - { key: "email_alert_level", value: "7" }
+
+- name: HIDS - post-install configuration Active Response
+  tags:
+    - install_hids
+  ansible.builtin.lineinfile:
+    path: "/var/ossec/etc/ossec.conf"
+    # regex: "^.*{{ item.key }}"
+    insertafter: "^.*{{ item.key }}"
+    line: "{{ item.value }}"
+    state: present
+    backup: true
+  loop:
+    - { key: "<command>host-deny</command>", value: "    <repeated_offenders>25,125,625</repeated_offenders> <!-- Host-deny rule -->" }
+    - { key: "<command>firewall-drop</command>", value: "    <repeated_offenders>25,125,625</repeated_offenders> <!-- Firewall-drop rule -->" }
+
+- name: HIDS - Add custom rules
+  tags:
+    - install_hids
+    - update_custom_rules_hids
+  ansible.builtin.blockinfile:
+    path: "/var/ossec/rules/local_rules.xml"
+    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK - {{ item.section }} -->"
+    insertbefore: "{{ item.insertbefore }}"
+    block: "  {{ item.block }}"
+  loop: "{{ ossec_rules }}"
+  # when:
+  #     - item|lower != 'none'
+
+- name: HIDS - Restart OSSEC service
+  tags:
+    - install_hids
+    - update_custom_rules_hids
+  ansible.builtin.command: "/bin/bash /var/ossec/bin/ossec-control restart"
+  register: ossec_started
+  changed_when: ossec_started.rc == 0

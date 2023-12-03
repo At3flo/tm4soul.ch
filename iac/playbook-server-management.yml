@@ -1,0 +1,10 @@
+---
+- name: Server installation
+  hosts: all
+  become: true
+  roles:
+    - ansible-modules-bitwarden
+    - bare_installation
+    - install_hishtory
+    - machine_hardening
+    - system_monitoring

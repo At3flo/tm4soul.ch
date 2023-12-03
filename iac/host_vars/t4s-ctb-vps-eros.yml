@@ -1,0 +1,61 @@
+---
+motd_banner_path: './motd/t4s-ctb-vps-eros' # Location of the server welcome banner
+ssh_port: 8822
+system_users:
+  - nobody
+  - ceph
+  - node_exporter
+  - blackbox_exporter
+  - prometheus
+  - alertmanager
+  - shell2http
+  - pingme
+fw_ports:
+  - info: SSH port
+    port: 8822
+    protocol: tcp
+  - info: Webmin
+    port: 10000
+    protocol: tcp
+  - info: Prommanager
+    port: 9500,9590
+    protocol: tcp
+  - info: Proxy
+    port: 80
+    protocol: tcp
+
+users:                  # Add as many users as requested
+  - username: "{{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='username')[0] }}"
+    groups: admin
+    fullname: ""
+    password: "{{ lookup('bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7') }}"
+    totp: "{{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='totp') }}"
+    ssh_key: "{{ lookup('bitwarden', 'id_t4s_adm.pub', itemid='02e0eacb-3306-411f-ab46-c82745f9bcd7', attachments=true) }}"
+root_user:
+  - password: "{{ lookup('bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7') }}"
+smtp_fqdn: "tm4soul.ch"
+smtp_relayhost: "[ssl0.ovh.net]:587"
+alert_email_sent_to: "{{ lookup('bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='iac_email', custom_field=true) }}"
+ossec_version: "3.7.0"
+ossec_rules:
+  - section: "Snap full ignore rule"
+    block: |
+      <rule id="100100" level="0">
+          <if_sid>531</if_sid>
+          <regex>'df -P':\s+/dev/loop\d+\s+\d+\s+\d+\s+0\s+100%\s+/snap/\w+/\d+</regex>
+          <description>Ignore full snap loop devices</description>
+        </rule>
+    insertbefore: "^</group>"
+  - section: "Docker starting ignore rule"
+    block: |
+      <rule id="100300" level="0">
+          <if_sid>5104</if_sid>
+          <match>veth</match>
+          <description>Ignore docker starting container message</description>
+      </rule>
+    insertbefore: "^</group>"
+prommanager_env_file: env/.prommanager.t4s-ctb-vps-eros.env
+prommanager_version: v5.2.0
+prommanager_channel: stable
+hishtory_version: "v0.256"
+main_user: "{{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='username')[0] }}"

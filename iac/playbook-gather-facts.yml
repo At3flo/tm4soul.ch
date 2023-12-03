@@ -1,0 +1,11 @@
+- name: Gather Facts for a Specific Machine
+  hosts: all
+  become: true
+  roles:
+    - ansible-modules-bitwarden
+  tasks:
+    - name: Gather Facts
+      ansible.builtin.setup:
+    - name: Print Gathered Facts
+      ansible.builtin.debug:
+        var: ansible_facts

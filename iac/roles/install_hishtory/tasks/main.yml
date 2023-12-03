@@ -1,0 +1,50 @@
+---
+- name: Prepare variables to install/update hiSHtory for every user and root
+  tags:
+    - update_machine
+    - update_hishtory
+    - install_hishtory
+  loop: "{{ users }}"
+  # Do not log all users credentials for security reasons
+  no_log: true
+  ansible.builtin.set_fact:
+    # noqa: var-naming[no-role-prefix]
+    hishtory_users: "{{ users | map(attribute='username') | list + ['root'] }}"
+
+- name: Assert hishtory_users variable existance
+  tags:
+    - install_hishtory
+  ansible.builtin.assert:
+    that:
+      - hishtory_users is defined
+      - hishtory_users is not none
+      - hishtory_users | length > 0
+    fail_msg: "hishtory_users variable is not defined, is none, or has no items"
+
+- name: Get architecture of the machine for hishtory version (armv7l -> arm, x86_64 -> amd64, aarch64 -> arm64)
+  tags:
+    - install_hishtory
+    - skip_ansible_lint
+  ansible.builtin.set_fact:
+    install_hishtory_architecture: "{{ install_hishtory_arch_2 }}"
+  failed_when: install_hishtory_architecture is not defined or install_hishtory_architecture == ""
+  vars:
+    install_hishtory_arch_1: >-
+      {% if ansible_architecture == 'armv7l' %}
+        arm
+      {% elif ansible_architecture == 'x86_64' %}
+        amd64
+      {% elif ansible_architecture == 'aarch64' %}
+        arm64
+      {% endif %}
+    install_hishtory_arch_2: "{{ install_hishtory_arch_1 | regex_replace('\\s+', '') }}"
+
+- name: Install hiSHtory for all users in hishtory_users
+  tags:
+    - install_hishtory
+  loop: "{{ hishtory_users }}"
+  ansible.builtin.include_tasks:
+    file: install_hishtory.yml
+    apply:
+      tags:
+        - install_hishtory
