@@ -1,0 +1,124 @@
+- name: Assert Grafana's grafana_monitoring_dashboard_url existance
+  tags:
+    - install_grafana
+  ansible.builtin.assert:
+    that:
+      - grafana_monitoring_dashboard_url is defined
+      - grafana_monitoring_dashboard_url is string
+      - grafana_monitoring_dashboard_url | length > 0
+    fail_msg: "grafana_monitoring_dashboard_url variable is not defined, is not a string, or is empty"
+
+- name: Remove old Docker packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker
+    - docker-engine
+    - docker.io
+    - containerd
+    - runc
+  tags: install_docker
+
+- name: Install prerequisites
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg2
+      - lsb-release
+      - python3-pip
+    state: present
+  tags: install_docker
+
+- name: Add Docker GPG key
+  tags:
+    - install_docker
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: "0644"
+    force: true
+
+- name: Add Docker repository
+  tags: install_docker
+  block:
+    - name: Determine dpkg architecture
+      ansible.builtin.command: dpkg --print-architecture
+      register: docker_installation_dpkg_architecture
+      changed_when: docker_installation_dpkg_architecture.rc != 0
+    - name: Add repository
+      ansible.builtin.apt_repository:
+        repo: >
+          deb [arch={{ docker_installation_dpkg_architecture.stdout }} signed-by=/etc/apt/keyrings/docker.asc]
+          https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+        state: present
+        update_cache: true
+
+- name: Install pip prerequisites for docker management
+  tags:
+    - install_docker
+    - install_docker_python
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker
+
+- name: Install Docker
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+  tags: install_docker
+
+- name: Create Grafana volume
+  tags: install_grafana
+  community.docker.docker_volume:
+    name: monitoring_data
+
+- name: Run Grafana container
+  tags: install_grafana
+  community.docker.docker_container:
+    name: grafana
+    image: grafana/grafana-oss
+    restart_policy: always
+    state: started
+    published_ports:
+      - "3000:3000"
+    volumes:
+      - "monitoring_data:/var/lib/grafana"
+    env:
+      GF_FEATURE_TOGGLES_ENABLE: publicDashboards
+      GF_SERVER_DOMAIN: "{{ grafana_monitoring_dashboard_url }}"
+      GF_SERVER_ROOT_URL: "https://{{ grafana_monitoring_dashboard_url }}"
+
+- name: Create Dockge folders
+  tags: install_dockge
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - /opt/dockge
+    - /opt/stacks
+
+- name: Run Dockge Docker Container Manager
+  tags: install_dockge
+  community.docker.docker_container:
+    name: dockge
+    image: louislam/dockge:1.4.0
+    restart_policy: unless-stopped
+    state: started
+    published_ports:
+      - "5001:5001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/dockge/data:/app/data
+      - /opt/stacks:/opt/stacks
+    env:
+      DOCKGE_STACKS_DIR: "/opt/stacks"

@@ -1,0 +1,7 @@
+---
+- name: Docker installation with all images
+  hosts: servers
+  become: true
+  roles:
+    - ansible-modules-bitwarden
+    - docker_installation
