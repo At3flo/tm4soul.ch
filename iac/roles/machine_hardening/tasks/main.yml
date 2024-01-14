@@ -159,16 +159,6 @@
     default: allow
     direction: outgoing
 
-- name: Disable UFW
-  tags:
-    - install_fw
-    - update_fw_ports
-    - update_ssh_port
-    - secure_ssh
-    - install_prommanager
-  community.general.ufw:
-    state: disabled
-
 - name: Retrieve actual FW rules
   tags:
     - install_fw
@@ -191,6 +181,16 @@
     - install_prommanager
   ansible.builtin.debug:
     msg: "{{ rules_deleted.stdout }}"
+
+- name: Disable UFW
+  tags:
+    - install_fw
+    - update_fw_ports
+    - update_ssh_port
+    - secure_ssh
+    - install_prommanager
+  community.general.ufw:
+    state: disabled
 
 - name: Remove all rules defined by users
   tags:

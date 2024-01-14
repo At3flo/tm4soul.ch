@@ -21,7 +21,7 @@ fw_ports:
     port: 9500,9590
     protocol: tcp
   - info: Proxy
-    port: 80
+    port: 80,443
     protocol: tcp
 
 users: # Add as many users as requested
@@ -64,3 +64,4 @@ prommanager_channel: stable
 hishtory_version: "v0.256"
 main_user: "{{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='username')[0] }}"
 grafana_monitoring_dashboard_url: "monitoring.tm4soul.ch"
+caddyfile_name: "Caddyfile-t4s-ctb-vps-eros.j2"

@@ -5,7 +5,7 @@
     - install_prommanager
     - update_prommanager
   ansible.builtin.import_role:
-    name: prommanager/roles/update_prommanager
+    name: prommanager/roles/update_prommanager # noqa role-name[path]
 
 - name: Prommanager - Update configuration
   tags:
@@ -13,7 +13,7 @@
     - install_prommanager
     - update_prommanager_configuration
   ansible.builtin.import_role:
-    name: prommanager/roles/update_configuration
+    name: prommanager/roles/update_configuration # noqa role-name[path]
 
 - name: Prommanager - Update Services
   tags:
@@ -21,7 +21,7 @@
     - install_prommanager
     - update_prommanager_services
   ansible.builtin.import_role:
-    name: prommanager/roles/update_services
+    name: prommanager/roles/update_services # noqa role-name[path]
 
 - name: Prommanager - Get versions
   tags:
@@ -30,7 +30,7 @@
     - update_prommanager_services
     - prommanager_status
   ansible.builtin.import_role:
-    name: prommanager/roles/get_services_versions
+    name: prommanager/roles/get_services_versions # noqa role-name[path]
 
 - name: Prommanager - Get status
   tags:
@@ -40,4 +40,4 @@
     - update_prommanager_services
     - prommanager_status
   ansible.builtin.import_role:
-    name: prommanager/roles/get_status
+    name: prommanager/roles/get_status # noqa role-name[path]
