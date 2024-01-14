@@ -24,7 +24,7 @@ fw_ports:
     port: 80
     protocol: tcp
 
-users:                  # Add as many users as requested
+users: # Add as many users as requested
   - username: "{{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='username')[0] }}"
     groups: admin
     fullname: ""
@@ -35,6 +35,10 @@ root_user:
   - password: "{{ lookup('bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7') }}"
 smtp_fqdn: "tm4soul.ch"
 smtp_relayhost: "[ssl0.ovh.net]:587"
+smtp_username: "{{ lookup('community.general.bitwarden', '7962abfb-0593-49df-851e-171ea0bab363', search='id', field='username')[0] }}"
+smtp_password: "{{ lookup('community.general.bitwarden', '7962abfb-0593-49df-851e-171ea0bab363', search='id', field='password')[0] }}"
+
+# alert_email_sent_to multiple receivers WARNING FORMAT: first@email.com,second@email.com
 alert_email_sent_to: "{{ lookup('bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='iac_email', custom_field=true) }}"
 ossec_version: "3.7.0"
 ossec_rules:

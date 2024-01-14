@@ -1,3 +1,19 @@
+- name: Assert smtp variables existance
+  tags:
+    - secure_root_access
+    - install_hids
+    - config_hids_emails
+    - test_mbo
+  ansible.builtin.assert:
+    that:
+      - smtp_username is defined
+      - smtp_username is string
+      - smtp_username | length > 0
+      - smtp_password is defined
+      - smtp_password is string
+      - smtp_password | length > 0
+    fail_msg: "smtp_username OR smtp_password variable is not defined, is not a string, or is empty"
+
 - name: Update root properties based on host_vars list
   tags: secure_root_access
   ansible.builtin.user:
@@ -311,7 +327,7 @@
     create: true
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
 
 - name: Restart SSHD
   tags:
@@ -339,7 +355,7 @@
     state: present
     backup: true
     create: true
-    mode: 0644
+    mode: "0644"
   loop:
     - { key: "APT::Periodic::Update-Package-Lists", value: "\"1\";" }
     - { key: "APT::Periodic::Download-Upgradeable-Packages", value: "\"1\";" }
@@ -356,7 +372,7 @@
     state: present
     backup: true
     create: true
-    mode: 0644
+    mode: "0644"
   loop:
     - { key: "distro_codename}-security", comment: "  ", line_substitution: "${distro_id}:${distro_codename}-security" }
     - { key: "distro_codename}-apps-security", comment: "  ", line_substitution: "${distro_id}ESMApps:${distro_codename}-apps-security" }
@@ -400,10 +416,10 @@
   ansible.builtin.copy:
     dest: "/etc/postfix/sasl/sasl_passwd"
     content: |
-      {{ smtp_relayhost }} {{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='username')[0] }}:{{ lookup('community.general.bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='password')[0] }}
+      {{ smtp_relayhost }} {{ smtp_username }}:{{ smtp_password }}
     owner: root
     group: root
-    mode: 0600
+    mode: "0600"
 
 - name: Postfix - query Postfix lookup tables
   tags:
@@ -423,7 +439,8 @@
   tags:
     - install_postfix
     - skip_ansible_lint
-  ansible.builtin.shell: "echo \"From:{{ ansible_hostname }}@{{ smtp_fqdn }}\nSubject: Mail Delivery Test\nThis is the test e-mail body\" | sendmail -v {{ alert_email_sent_to }}"
+  ansible.builtin.shell:
+    "echo \"From:{{ ansible_hostname }}@{{ smtp_fqdn }}\nSubject: Mail Delivery Test\nThis is the test e-mail body\" | sendmail -v {{ alert_email_sent_to }}"
   register: email_sent
   changed_when: email_sent.rc == 0
 
@@ -504,7 +521,7 @@
     - { key: "USER_ENABLE_ROOTCHECK", value: "y" }
     - { key: "USER_ENABLE_ACTIVE_RESPONSE", value: "y" }
     - { key: "USER_ENABLE_FIREWALL_RESPONSE", value: "y" }
-    - { key: "USER_WHITE_LIST", value: "192.168.10.0/24" }
+    - { key: "USER_WHITE_LIST", value: "192.168.10.0/16" }
   when: not hids_installed.stat.exists
 
 - name: "HIDS - install OSSEC"
@@ -520,15 +537,31 @@
 - name: HIDS - post-install configuration Email Alerts
   tags:
     - install_hids
-  ansible.builtin.lineinfile:
-    path: "/var/ossec/etc/ossec.conf"
-    regex: "^.*<{{ item.key }}>"
-    line: "    <{{ item.key }}>{{ item.value }}</{{ item.key }}>"
-    backup: true
-  loop:
-    - { key: "email_from", value: "{{ ansible_hostname }}@{{ smtp_fqdn }}" }
-    - { key: "log_alert_level", value: "3" }
-    - { key: "email_alert_level", value: "7" }
+    - config_hids_emails
+  block:
+    - name: Split email addresses
+      ansible.builtin.set_fact:
+        email_addresses: "{{ alert_email_sent_to.split(',') }}"
+
+    - name: Update ossec.conf with email_to entries
+      ansible.builtin.lineinfile:
+        path: "/var/ossec/etc/ossec.conf"
+        regex: "^.*<email_to>"
+        line: "    <email_to>{{ item }}</email_to>"
+        backup: true
+      loop: "{{ [''] + email_addresses }}"  # Adding an empty string to remove any additional email_to entries
+      when: email_addresses | length > 0
+
+    - name: Update other ossec.conf entries
+      ansible.builtin.lineinfile:
+        path: "/var/ossec/etc/ossec.conf"
+        regex: "^.*<{{ item.key }}>"
+        line: "    <{{ item.key }}>{{ item.value }}</{{ item.key }}>"
+        backup: true
+      loop:
+        - { key: "email_from", value: "{{ ansible_hostname }}@{{ smtp_fqdn }}" }
+        - { key: "log_alert_level", value: "3" }
+        - { key: "email_alert_level", value: "7" }
 
 - name: HIDS - post-install configuration Active Response
   tags:
@@ -560,6 +593,7 @@
 - name: HIDS - Restart OSSEC service
   tags:
     - install_hids
+    - config_hids_emails
     - update_custom_rules_hids
   ansible.builtin.command: "/bin/bash /var/ossec/bin/ossec-control restart"
   register: ossec_started
