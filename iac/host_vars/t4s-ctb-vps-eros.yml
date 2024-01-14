@@ -58,6 +58,30 @@ ossec_rules:
           <description>Ignore docker starting container message</description>
       </rule>
     insertbefore: "^</group>"
+  - section: "Ignore Caddy syslog too large"
+    block: |
+      <rule id="100400" level="0">
+          <if_sid>1003</if_sid>
+          <match>caddy</match>
+          <description>Ignore Caddy syslog too large</description>
+      </rule>
+    insertbefore: "^</group>"
+  - section: "Ignore Integrity checksum changed again"
+    block: |
+      <rule id="100500" level="0">
+          <if_sid>551</if_sid>
+          <match>checksum changed again</match>
+          <description>Ignore Integrity checksum changed again</description>
+      </rule>
+    insertbefore: "^</group>"
+  - section: "Ignore Integrity checksum changed"
+    block: |
+      <rule id="100501" level="0">
+          <if_sid>550</if_sid>
+          <match>checksum changed</match>
+          <description>Ignore Integrity checksum changed</description>
+      </rule>
+    insertbefore: "^</group>"
 prommanager_env_file: env/.prommanager.t4s-ctb-vps-eros.env
 prommanager_version: v5.2.0
 prommanager_channel: stable
