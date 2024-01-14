@@ -1,0 +1,8 @@
+---
+- name: Proxy manager management
+  hosts: t4s-ctb-vps-eros
+  gather_facts: false
+  become: true
+  roles:
+    - ansible-modules-bitwarden
+    - install_caddy

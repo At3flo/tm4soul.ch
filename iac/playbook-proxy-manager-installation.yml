@@ -1,7 +1,0 @@
----
-- name: Proxy manager installation
-  hosts: servers
-  become: true
-  roles:
-    - ansible-modules-bitwarden
-    - install_caddy

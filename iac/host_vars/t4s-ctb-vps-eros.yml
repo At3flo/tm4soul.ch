@@ -40,6 +40,7 @@ smtp_password: "{{ lookup('community.general.bitwarden', '7962abfb-0593-49df-851
 
 # alert_email_sent_to multiple receivers WARNING FORMAT: first@email.com,second@email.com
 alert_email_sent_to: "{{ lookup('bitwarden', '02e0eacb-3306-411f-ab46-c82745f9bcd7', search='id', field='iac_email', custom_field=true) }}"
+alert_email_ssl_certificate: "{{ lookup('community.general.bitwarden', '7962abfb-0593-49df-851e-171ea0bab363', search='id', field='username')[0] }}"
 ossec_version: "3.7.0"
 ossec_rules:
   - section: "Snap full ignore rule"

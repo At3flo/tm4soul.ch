@@ -1,0 +1,9 @@
+---
+- name: Push and load docker images on production server
+  hosts: t4s-ctb-vps-eros
+  strategy: linear # VS free
+  gather_facts: false
+  become: true
+  roles:
+    - ansible-modules-bitwarden
+    - deploy_docker

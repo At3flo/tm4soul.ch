@@ -9,6 +9,16 @@
       - caddyfile_name is string
       - caddyfile_name | length > 0
 
+- name: Assert alert_email_ssl_certificate is defined
+  tags:
+    - install_caddy
+    - update_caddy_config
+  ansible.builtin.assert:
+    that:
+      - alert_email_ssl_certificate is defined
+      - alert_email_ssl_certificate is string
+      - alert_email_ssl_certificate | length > 0
+
 - name: Add Caddy GPG key
   tags:
     - install_caddy

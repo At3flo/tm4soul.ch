@@ -1,0 +1,32 @@
+---
+- name: Make sure folder tm4soulch exists
+  tags:
+    - init_deploy
+  ansible.builtin.file:
+    path: /opt/tm4soulch
+    state: directory
+    mode: "0755"
+    recurse: true
+
+- name: Push docker builds on server
+  tags:
+    - deploy
+    - push
+  ansible.builtin.copy:
+    src: "dist/{{ item }}"
+    dest: /opt/tm4soulch/
+    mode: "0644"
+  loop:
+    - tm4soulch-api.tar
+    - tm4soulch-web.tar
+
+- name: Load docker images on server
+  tags:
+    - deploy
+    - load
+  ansible.builtin.shell: docker load < "/opt/tm4soulch/{{ item }}"
+  register: load_images
+  changed_when: load_images.rc != 0
+  loop:
+    - tm4soulch-api.tar
+    - tm4soulch-web.tar

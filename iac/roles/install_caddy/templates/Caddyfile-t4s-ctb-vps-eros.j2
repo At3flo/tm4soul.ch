@@ -8,12 +8,16 @@
 # this machine's public IP, then replace ":80" below with your
 # domain name.
 {
-	email {{ alert_email_sent_to }}
+	email {{ alert_email_ssl_certificate }}
 	ocsp_stapling off
 }
 
 monitoring.tm4soul.ch {
 	reverse_proxy localhost:3000
+}
+
+staging.tm4soul.ch {
+	reverse_proxy localhost:8910
 }
 
 # Refer to the Caddy docs for more information:
