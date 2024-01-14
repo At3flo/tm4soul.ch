@@ -3,7 +3,6 @@
     - secure_root_access
     - install_hids
     - config_hids_emails
-    - test_mbo
   ansible.builtin.assert:
     that:
       - smtp_username is defined
