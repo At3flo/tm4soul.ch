@@ -8,8 +8,10 @@ generator client {
   binaryTargets = "native"
 }
 
-model GalleryDescription {
-  uuidGalleryDescription  String @id @default(uuid())
-  galleryDescriptionHeader  String?
-  galleryDescriptionContent String?
+model Tag {
+  uuidTag  String @id @default(uuid())
+  tagTitleNormalized  String
+  tagTitleWithDiacritics String?
+  tagDescription String?
+  tagWeight Int
 }

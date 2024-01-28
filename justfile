@@ -5,6 +5,9 @@ set export
 dev:
   yarn rw dev
 
+types:
+  yarn rw g types
+
 db-init:
   sudo apt-get install libicu-dev
   asdf plugin-add postgres https://github.com/smashedtoatoms/asdf-postgres.git
