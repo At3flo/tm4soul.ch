@@ -19,6 +19,7 @@
   loop:
     - tm4soulch-api.tar
     - tm4soulch-web.tar
+    - tm4soulch-console.tar
 
 - name: Load docker images on server
   tags:
@@ -30,3 +31,4 @@
   loop:
     - tm4soulch-api.tar
     - tm4soulch-web.tar
+    - tm4soulch-console.tar

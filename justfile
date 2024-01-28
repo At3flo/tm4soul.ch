@@ -84,18 +84,24 @@ build-containers: check-BW_SESSION-is-set sync-versions
   docker compose -f docker-compose.prod.yml build
 
   echo "Tagging docker images with version $(git-sv nv)..."
-  docker tag tm4soulch-web:latest tm4soul.ch/tm4soulch-web:$(git-sv nv)
-  docker tag tm4soulch-api:latest tm4soul.ch/tm4soulch-api:$(git-sv nv)
+  docker tag tm4soulch-web:latest tm4soul.ch/tm4soulch-web:"$(git-sv nv)"
+  docker tag tm4soulch-api:latest tm4soul.ch/tm4soulch-api:"$(git-sv nv)"
+  docker tag tm4soulch-console:latest tm4soul.ch/tm4soulch-console:"$(git-sv nv)"
 
   echo "Saving docker images to tar files..."
-  docker save -o iac/dist/tm4soulch-web.tar tm4soul.ch/tm4soulch-web:$(git-sv nv)
-  docker save -o iac/dist/tm4soulch-api.tar tm4soul.ch/tm4soulch-api:$(git-sv nv)
+  docker save -o iac/dist/tm4soulch-web.tar tm4soul.ch/tm4soulch-web:"$(git-sv nv)"
+  docker save -o iac/dist/tm4soulch-api.tar tm4soul.ch/tm4soulch-api:"$(git-sv nv)"
+  docker save -o iac/dist/tm4soulch-console.tar tm4soul.ch/tm4soulch-console:"$(git-sv nv)"
 
 push-images: check-BW_SESSION-is-set
   cd iac && ansible-playbook -i inventory playbook-deploy-docker.yml -t push
 
 load-images: check-BW_SESSION-is-set
   cd iac && ansible-playbook -i inventory playbook-deploy-docker.yml -t load
+
+deploy: build-containers
+  cd iac && ansible-playbook -i inventory playbook-deploy-docker.yml
+  just finish
 
 finish:
   @echo
