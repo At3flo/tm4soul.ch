@@ -9,7 +9,6 @@ import { toast } from '@redwoodjs/web/toast'
 
 import {} from 'src/lib/formatters'
 
-
 const DELETE_TAG_MUTATION = gql`
   mutation DeleteTagMutation($uuidTag: String!) {
     deleteTag(uuidTag: $uuidTag) {
