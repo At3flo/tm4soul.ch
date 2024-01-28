@@ -12,6 +12,14 @@ export const tag: QueryResolvers['tag'] = ({ uuidTag }) => {
   })
 }
 
+export const tagByTitleNormalized: QueryResolvers['tagByTitleNormalized'] = ({
+  tagTitleNormalized,
+}) => {
+  return db.tag.findUnique({
+    where: { tagTitleNormalized },
+  })
+}
+
 export const createTag: MutationResolvers['createTag'] = ({ input }) => {
   return db.tag.create({
     data: input,

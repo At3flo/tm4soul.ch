@@ -10,6 +10,7 @@ export const schema = gql`
   type Query {
     tags: [Tag!]! @requireAuth
     tag(uuidTag: String!): Tag @requireAuth
+    tagByTitleNormalized(tagTitleNormalized: String!): Tag @requireAuth
   }
 
   input CreateTagInput {

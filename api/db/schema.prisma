@@ -10,7 +10,7 @@ generator client {
 
 model Tag {
   uuidTag  String @id @default(uuid())
-  tagTitleNormalized  String
+  tagTitleNormalized  String @unique
   tagTitleWithDiacritics String?
   tagDescription String?
   tagWeight Int
