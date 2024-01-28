@@ -2,6 +2,9 @@
 set dotenv-load
 set export
 
+dev:
+  yarn rw dev
+
 @check-BW_SESSION-is-set:
     if [ -z "${BW_SESSION}" ]; then \
         echo "BW_SESSION is not set"; \
