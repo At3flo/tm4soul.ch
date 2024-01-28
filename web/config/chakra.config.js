@@ -8,8 +8,13 @@ const brandPrimary = defineStyle({
   backgroundColor: 'primary.gray',
 })
 
+const brandDanger = defineStyle({
+  border: '1px solid', // change the appearance of the border
+  backgroundColor: 'primary.accent',
+})
+
 export const badgeTheme = defineStyleConfig({
-  variants: { brandPrimary },
+  variants: { brandPrimary, brandDanger },
 })
 
 export const theme = extendTheme({

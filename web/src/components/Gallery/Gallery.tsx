@@ -1,5 +1,7 @@
 import { Badge, Box, Image } from '@chakra-ui/react'
 
+import { useInterfaceStateStore } from 'src/hooks/useInterfaceStateStore'
+
 const Gallery = ({ tags }) => {
   const imageCount = Math.floor(Math.random() * (25 - 8 + 1)) + 8 // Total number of images
 
@@ -26,6 +28,8 @@ const Gallery = ({ tags }) => {
     )
   }
 
+  const { tagsSelected, updateTags: addTags } = useInterfaceStateStore()
+
   return (
     <div
       style={{
@@ -50,9 +54,12 @@ const Gallery = ({ tags }) => {
           {tags.map((tag, index) => (
             <Badge
               key={index}
-              variant="brandPrimary"
+              variant={
+                tagsSelected.includes(tag) ? 'brandDanger' : 'brandPrimary'
+              }
               mr={2}
               style={{ marginBottom: '0' }}
+              onClick={() => addTags(tag)}
             >
               {tag}
             </Badge>
