@@ -17,6 +17,7 @@ if [ $# -ne 1 ] || [ "$1" != "-e" ] && [ "$1" != "-d" ] && [ "$1" != "-r" ]; the
 fi
 
 for i in \
+".env" \
 "iac/env/.prommanager.t4s-ctb-vps-eros.env" \
 
 do
