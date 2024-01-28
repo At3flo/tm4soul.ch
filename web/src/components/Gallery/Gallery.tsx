@@ -28,7 +28,7 @@ const Gallery = ({ tags }) => {
     )
   }
 
-  const { tagsSelected, updateTags: addTags } = useInterfaceStateStore()
+  const { tagsSelected, updateTags } = useInterfaceStateStore()
 
   return (
     <div
@@ -59,7 +59,7 @@ const Gallery = ({ tags }) => {
               }
               mr={2}
               style={{ marginBottom: '0' }}
-              onClick={() => addTags(tag)}
+              onClick={() => updateTags(tag)}
             >
               {tag}
             </Badge>
