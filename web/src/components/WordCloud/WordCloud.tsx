@@ -1,15 +1,30 @@
+import { useQuery, gql } from '@apollo/client'
 import { Text } from '@chakra-ui/react'
 
 import { Link, routes } from '@redwoodjs/router'
 
 import { useInterfaceStateStore } from 'src/hooks/useInterfaceStateStore'
 
-import GalleryTags from '../GalleryTags/GalleryTags'
+const QUERY = gql`
+  query FindTagsFromWordCloud {
+    tags {
+      tagTitleNormalized
+      tagWeight
+    }
+  }
+`
 
 const WordCloud = () => {
-  const shuffledItems = GalleryTags.sort(() => Math.random() - 0.5)
-
   const { updateTags } = useInterfaceStateStore()
+
+  const { loading, error, data } = useQuery(QUERY)
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error :(</p>
+
+  const tags = data.tags
+
+  const shuffledItems = [...tags].sort(() => Math.random() - 0.5)
 
   return (
     <div
@@ -26,18 +41,18 @@ const WordCloud = () => {
       {shuffledItems.map((item) => (
         <Link
           to={routes.gallery()}
-          key={item.Tag}
+          key={item.tagTitleNormalized}
           style={{ textDecoration: 'none' }}
-          onClick={() => updateTags(item.Tag)}
+          onClick={() => updateTags(item.tagTitleNormalized)}
         >
           <Text
-            fontSize={`${4 - parseInt(item.Weight) * 0.5}em`}
-            fontWeight={700 - parseInt(item.Weight) * 100}
+            fontSize={`${4 - parseInt(item.tagWeight) * 0.5}em`}
+            fontWeight={700 - parseInt(item.tagWeight) * 100}
             color="primary.gray"
             style={{ margin: '0', padding: '5px' }}
             _hover={{ color: 'primary.accent' }}
           >
-            {item.Tag}
+            {item.tagTitleNormalized}
           </Text>
         </Link>
       ))}

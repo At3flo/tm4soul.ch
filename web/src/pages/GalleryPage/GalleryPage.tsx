@@ -5,8 +5,6 @@ import GalleryDescriptionCell from 'src/components/GalleryDescriptionCell'
 import GridContainer from 'src/components/GridContainer/GridContainer'
 import { useInterfaceStateStore } from 'src/hooks/useInterfaceStateStore'
 
-import GalleryTags from '../../components/GalleryTags/GalleryTags'
-
 const GalleryPage = () => {
   const { tagsSelected } = useInterfaceStateStore()
   return (
@@ -14,7 +12,7 @@ const GalleryPage = () => {
       <MetaTags title="Gallery" description="Gallery page" />
 
       <GridContainer
-        mainComponent={<Gallery tags={GalleryTags.map((item) => item.Tag)} />}
+        mainComponent={<Gallery />}
         sideComponent={
           <GalleryDescriptionCell tagTitleNormalized={tagsSelected[0]} />
         }

@@ -1,8 +1,26 @@
+import { useQuery, gql } from '@apollo/client'
 import { Badge, Box, Image } from '@chakra-ui/react'
 
 import { useInterfaceStateStore } from 'src/hooks/useInterfaceStateStore'
 
-const Gallery = ({ tags }) => {
+const QUERY = gql`
+  query FindTagsFromGallery {
+    tags {
+      tagTitleNormalized
+    }
+  }
+`
+
+const Gallery = () => {
+  const { tagsSelected, updateTags } = useInterfaceStateStore()
+
+  const { loading, error, data } = useQuery(QUERY)
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error :(</p>
+
+  const tags = data.tags
+
   const imageCount = Math.floor(Math.random() * (25 - 8 + 1)) + 8 // Total number of images
 
   const images = []
@@ -27,8 +45,6 @@ const Gallery = ({ tags }) => {
       </Box>
     )
   }
-
-  const { tagsSelected, updateTags } = useInterfaceStateStore()
 
   return (
     <div
@@ -55,13 +71,15 @@ const Gallery = ({ tags }) => {
             <Badge
               key={index}
               variant={
-                tagsSelected.includes(tag) ? 'brandDanger' : 'brandPrimary'
+                tagsSelected.includes(tag.tagTitleNormalized)
+                  ? 'brandDanger'
+                  : 'brandPrimary'
               }
               mr={2}
               style={{ marginBottom: '0' }}
-              onClick={() => updateTags(tag)}
+              onClick={() => updateTags(tag.tagTitleNormalized)}
             >
-              {tag}
+              {tag.tagTitleNormalized}
             </Badge>
           ))}
         </div>
