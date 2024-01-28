@@ -5,6 +5,25 @@ set export
 dev:
   yarn rw dev
 
+db-init:
+  sudo apt-get install libicu-dev
+  asdf plugin-add postgres https://github.com/smashedtoatoms/asdf-postgres.git
+  asdf install postgres 16.1
+  asdf local postgres 16.1
+  pg_ctl start
+  psql -U postgres -c "CREATE USER dbsysadmin WITH ENCRYPTED PASSWORD 'devmasterkey';"
+  psql -U postgres -c "CREATE DATABASE tm4soulch;"
+  psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE tm4soulch TO dbsysadmin;"
+  psql -U postgres -c "ALTER DATABASE tm4soulch OWNER TO dbsysadmin;"
+  psql -U postgres -c "GRANT USAGE ON SCHEMA public TO dbsysadmin;"
+  psql -U postgres -c "ALTER USER dbsysadmin CREATEDB;"
+
+db-start:
+  pg_ctl start
+
+db-migrate:
+  yarn redwood prisma migrate dev
+
 @check-BW_SESSION-is-set:
     if [ -z "${BW_SESSION}" ]; then \
         echo "BW_SESSION is not set"; \
