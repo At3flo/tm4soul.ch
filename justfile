@@ -30,6 +30,12 @@ db-migrate:
 db-studio:
   yarn redwood prisma studio
 
+db-seed:
+  yarn redwood prisma db seed
+
+db-reset:
+  yarn rw prisma migrate reset
+
 @check-BW_SESSION-is-set:
     if [ -z "${BW_SESSION}" ]; then \
         echo "BW_SESSION is not set"; \
