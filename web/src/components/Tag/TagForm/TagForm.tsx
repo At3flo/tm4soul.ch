@@ -1,3 +1,5 @@
+import type { EditTagByUuidTag, UpdateTagInput } from 'types/graphql'
+
 import {
   Form,
   FormError,
@@ -7,8 +9,6 @@ import {
   NumberField,
   Submit,
 } from '@redwoodjs/forms'
-
-import type { EditTagByUuidTag, UpdateTagInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 
 type FormTag = NonNullable<EditTagByUuidTag['tag']>
