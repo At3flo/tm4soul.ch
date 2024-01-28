@@ -47,14 +47,19 @@ export const Success = ({ tag }: CellSuccessProps<EditTagByUuidTag>) => {
     },
   })
 
-  const onSave = (input: UpdateTagInput, id: EditTagByUuidTag['tag']['id']) => {
-    updateTag({ variables: { id, input } })
+  const onSave = (
+    input: UpdateTagInput,
+    uuidTag: EditTagByUuidTag['tag']['uuidTag']
+  ) => {
+    updateTag({ variables: { uuidTag, input } })
   }
 
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">Edit Tag {tag?.id}</h2>
+        <h2 className="rw-heading rw-heading-secondary">
+          Edit Tag {tag?.uuidTag}
+        </h2>
       </header>
       <div className="rw-segment-main">
         <TagForm tag={tag} onSave={onSave} error={error} loading={loading} />
