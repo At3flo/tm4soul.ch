@@ -53,9 +53,7 @@ db-reset:
     git add CHANGELOG.md; \
     git commit -m "chore: update CHANGELOG.md to $(git-sv nv)"; \
     git push; \
-    release_path="$(git rev-parse --show-toplevel)/release/"; \
-    assets="--asset=$(find "$release_path" -mindepth 1 -maxdepth 1 -print0 | xargs --null realpath | xargs echo | sed 's/ / --asset=/g')"; \
-    tea r create --tag "$(git-sv nv)" -t "$(git-sv nv)" --note "$(git-sv rn)" --target="$(git rev-parse --abbrev-ref HEAD)" "${assets}"; \
+    gh release create "$(git-sv nv)" --title "$(git-sv nv)" --notes "$(git-sv rn)" --target "$(git rev-parse --abbrev-ref HEAD)"; \
   else \
     echo; \
     echo "---------------------------------"; \
