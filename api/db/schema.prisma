@@ -9,14 +9,16 @@ generator client {
 }
 
 model Tag {
-  uuidTag  String @id @default(uuid())
+  uuidTag  String   @id @default(uuid())
   tagTitleNormalized  String @unique
   tagTitleWithDiacritics String?
   tagDescription String?
   tagWeight Int
+  images    Image[]
 }
 
 model Image {
-  uuidImage  String @id @default(uuid())
-  file Bytes? @db.ByteA
+  uuidImage  String   @id @default(uuid())
+  file       Bytes?   @db.ByteA
+  tags       Tag[]
 }

@@ -7,6 +7,7 @@ export const schema = gql`
   type Query {
     images: [Image!]! @requireAuth
     image(uuidImage: String!): Image @requireAuth
+    imagesByTagsNormalized(tagTitleNormalized: String!): [Image!]! @requireAuth
   }
 
   input CreateImageInput {

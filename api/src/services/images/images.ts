@@ -6,6 +6,22 @@ export const images: QueryResolvers['images'] = () => {
   return db.image.findMany()
 }
 
+export const imagesByTagsNormalized: QueryResolvers['imagesByTagsNormalized'] =
+  ({ tagTitleNormalized }) => {
+    return db.image.findMany({
+      where: {
+        tags: {
+          some: {
+            tagTitleNormalized: tagTitleNormalized,
+          },
+        },
+      },
+      include: {
+        tags: true, // Ensure tags are included in the response
+      },
+    })
+  }
+
 export const image: QueryResolvers['image'] = ({ uuidImage }) => {
   return db.image.findUnique({
     where: { uuidImage },

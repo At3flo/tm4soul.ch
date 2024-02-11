@@ -87,7 +87,7 @@ const Gallery = () => {
 
         <Box textColor={'white'}>Hello</Box>
 
-        <ImageCell id="c204fb60-edea-40f0-a6cb-3a7c40c21730" />
+        <ImageCell tag={tagsSelected[0]} />
 
         <Box
           display="grid"
