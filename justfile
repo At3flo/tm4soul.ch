@@ -70,7 +70,17 @@ db-reset:
     echo "---------------------------------"; \
     echo; \
     git tag -d "$current_version"; \
-    tea r delete -y --delete-tag "$current_version"
+    gh release delete "$current_version" -y
+
+@delete-next-release:
+    next_version="$(git-sv nv)"; \
+    echo; \
+    echo "---------------------------------"; \
+    echo "DELETE RELEASE $next_version"; \
+    echo "---------------------------------"; \
+    echo; \
+    git tag -d "$next_version"; \
+    gh release delete "$next_version" -y
 
 sync-versions:
   sed -i "s/\"version\": \"\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)\"/\"version\": \"$(git-sv nv)\"/g" ./package.json
