@@ -114,7 +114,7 @@ push-images: check-BW_SESSION-is-set
 load-images: check-BW_SESSION-is-set
   cd iac && ansible-playbook -i inventory playbook-deploy-docker.yml -t load
 
-deploy: build-containers
+deploy: check-BW_SESSION-is-set build-containers
   cd iac && ansible-playbook -i inventory playbook-deploy-docker.yml
   just finish
 
