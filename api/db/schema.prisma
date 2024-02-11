@@ -15,3 +15,8 @@ model Tag {
   tagDescription String?
   tagWeight Int
 }
+
+model Image {
+  uuidImage  String @id @default(uuid())
+  file Bytes? @db.ByteA
+}

@@ -1,6 +1,7 @@
 import { useQuery, gql } from '@apollo/client'
 import { Badge, Box, Image } from '@chakra-ui/react'
 
+import ImageCell from 'src/components/ImageCell'
 import { useInterfaceStateStore } from 'src/hooks/useInterfaceStateStore'
 
 const QUERY = gql`
@@ -83,6 +84,10 @@ const Gallery = () => {
             </Badge>
           ))}
         </div>
+
+        <Box textColor={'white'}>Hello</Box>
+
+        <ImageCell id="c204fb60-edea-40f0-a6cb-3a7c40c21730" />
 
         <Box
           display="grid"
