@@ -1,6 +1,6 @@
 # base
 # ------------------------------------------------
-FROM node:18-bookworm-slim as base
+FROM node:20-bookworm-slim as base
 
 RUN corepack enable
 
@@ -59,7 +59,7 @@ RUN yarn redwood build web --no-prerender
 
 # serve api
 # ------------------------------------------------
-FROM node:18-bookworm-slim as api_serve
+FROM node:20-bookworm-slim as api_serve
 
 RUN corepack enable
 
@@ -96,7 +96,7 @@ CMD [ "node_modules/.bin/rw-server", "api", "--load-env-files" ]
 
 # serve web
 # ------------------------------------------------
-FROM node:18-bookworm-slim as web_serve
+FROM node:20-bookworm-slim as web_serve
 
 RUN corepack enable
 

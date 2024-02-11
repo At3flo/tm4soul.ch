@@ -79,7 +79,7 @@ sync-versions:
   sed -i "s/\"version\": \"\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)\"/\"version\": \"$(node -p "require('./package.json').version")\"/g" web/package.json
   sed -i "s/\"version\": \"\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)\"/\"version\": \"$(node -p "require('./package.json').version")\"/g" api/package.json
 
-build-containers: check-BW_SESSION-is-set sync-versions
+build-containers: sync-versions
   echo "Building docker images..."
   docker compose -f docker-compose.prod.yml build
 
@@ -92,6 +92,10 @@ build-containers: check-BW_SESSION-is-set sync-versions
   docker save -o iac/dist/tm4soulch-web.tar tm4soul.ch/tm4soulch-web:"$(git-sv nv)"
   docker save -o iac/dist/tm4soulch-api.tar tm4soul.ch/tm4soulch-api:"$(git-sv nv)"
   docker save -o iac/dist/tm4soulch-console.tar tm4soul.ch/tm4soulch-console:"$(git-sv nv)"
+
+run-containers-locally:
+  node_modules/mprocs/cli.js "docker compose -f docker-compose.prod.yml up" \
+  "docker compose -f ./docker-compose.prod.yml run --rm -it console /bin/bash"
 
 push-images: check-BW_SESSION-is-set
   cd iac && ansible-playbook -i inventory playbook-deploy-docker.yml -t push
