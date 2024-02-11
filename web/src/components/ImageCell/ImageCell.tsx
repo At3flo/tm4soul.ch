@@ -1,4 +1,4 @@
-import { Box, Image } from '@chakra-ui/react'
+import { Box, Image, Spinner } from '@chakra-ui/react'
 import type { FindImageByTagsNormalizedQuery } from 'types/graphql'
 
 import type {
@@ -15,7 +15,15 @@ export const QUERY: TypedDocumentNode<FindImageByTagsNormalizedQuery> = gql`
   }
 `
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => (
+  <Spinner
+    thickness="4px"
+    speed="0.65s"
+    emptyColor="gray.200"
+    color="white.500"
+    size="xl"
+  />
+)
 
 export const Empty = () => <div>Empty</div>
 
@@ -42,7 +50,9 @@ export const Success = ({
       {imagesByTagsNormalized.map((image, index) => {
         // Assuming `image.file` is a Buffer containing PNG data
         const base64Image = Buffer.from(image.file).toString('base64')
-        const imageUrl = `data:image/png;base64,${base64Image}`
+        const imageFormat =
+          image.file.toString('ascii', 0, 4) === '\x89PNG' ? 'png' : 'jpeg'
+        const imageUrl = `data:image/${imageFormat};base64,${base64Image}`
 
         return (
           <Box
