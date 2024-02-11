@@ -2,6 +2,7 @@ export const schema = gql`
   type Image {
     uuidImage: String!
     file: Byte
+    tags: [Tag]!
   }
 
   type Query {

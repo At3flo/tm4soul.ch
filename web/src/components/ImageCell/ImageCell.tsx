@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer'
+
 import { Box, Image, Spinner } from '@chakra-ui/react'
 import type { FindImageByTagsNormalizedQuery } from 'types/graphql'
 
