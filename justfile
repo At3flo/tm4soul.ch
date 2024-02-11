@@ -97,6 +97,9 @@ run-containers-locally:
   node_modules/mprocs/cli.js "docker compose -f docker-compose.prod.yml up" \
   "docker compose -f ./docker-compose.prod.yml run --rm -it console /bin/bash"
 
+stop-containers-locally:
+  docker compose -f docker-compose.prod.yml down
+
 push-images: check-BW_SESSION-is-set
   cd iac && ansible-playbook -i inventory playbook-deploy-docker.yml -t push
 
