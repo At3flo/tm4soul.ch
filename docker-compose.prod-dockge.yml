@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   api:
-    image: tm4soul.ch/tm4soulch-api:latest
+    image: tm4soul.ch/tm4soulch-api::0.1.1
     ports:
       - "8911:8911"
     depends_on:
@@ -12,7 +12,7 @@ services:
       - SESSION_SECRET=${SESSION_SECRET}
 
   web:
-    image: tm4soul.ch/tm4soulch-web:latest
+    image: tm4soul.ch/tm4soulch-web::0.1.1
     ports:
       - "8910:8910"
     depends_on:
@@ -30,3 +30,14 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres:/var/lib/postgresql/data
+
+  console:
+    user: root
+    image: tm4soul.ch/tm4soulch-console:0.1.1
+    tmpfs:
+      - /tmp
+    command: "true"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - db
