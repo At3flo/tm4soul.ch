@@ -85,22 +85,7 @@ const Gallery = () => {
           ))}
         </div>
 
-        <Box textColor={'white'}>Hello</Box>
-
         <ImageCell tag={tagsSelected[0]} />
-
-        <Box
-          display="grid"
-          gridTemplateColumns={{
-            base: 'repeat(1, 1fr)',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            xl: 'repeat(4, 1fr)',
-          }}
-          gridGap="1em"
-        >
-          {images}
-        </Box>
       </div>
     </div>
   )
