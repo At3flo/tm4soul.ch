@@ -1,5 +1,3 @@
-import { Buffer } from 'buffer'
-
 import { Box, Image, Spinner } from '@chakra-ui/react'
 import type { FindImageByTagsNormalizedQuery } from 'types/graphql'
 
@@ -9,10 +7,16 @@ import type {
   TypedDocumentNode,
 } from '@redwoodjs/web'
 
+declare const process: {
+  env: {
+    [key: string]: string | undefined
+  }
+}
+
 export const QUERY: TypedDocumentNode<FindImageByTagsNormalizedQuery> = gql`
   query FindImageByTagsNormalizedQuery($tag: String!) {
     imagesByTagsNormalized(tagTitleNormalized: $tag) {
-      file
+      uuidImage
     }
   }
 `
@@ -49,16 +53,12 @@ export const Success = ({
       }}
       gridGap="1em"
     >
-      {imagesByTagsNormalized.map((image, index) => {
-        // Assuming `image.file` is a Buffer containing PNG data
-        const base64Image = Buffer.from(image.file).toString('base64')
-        const imageFormat =
-          image.file.toString('ascii', 0, 4) === '\x89PNG' ? 'png' : 'jpeg'
-        const imageUrl = `data:image/${imageFormat};base64,${base64Image}`
+      {imagesByTagsNormalized.map((image) => {
+        const imageUrl = `${process.env.MINIO_S3_ENDPOINT}/${process.env.MINIO_BUCKET_NAME}/public/images/${image.uuidImage}.jpg`
 
         return (
           <Box
-            key={index}
+            key={image.uuidImage}
             width="12em"
             height="12em"
             overflow="hidden"
