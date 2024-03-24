@@ -163,8 +163,7 @@ export default async () => {
       {
         tagTitleNormalized: 'DROHNE',
         tagTitleWithDiacritics: 'Drohne',
-        tagDescription:
-          'Folgt',
+        tagDescription: 'Folgt',
         tagWeight: 6,
       },
     ]
