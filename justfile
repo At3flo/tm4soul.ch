@@ -8,6 +8,12 @@ dev:
 types:
   yarn rw g types
 
+build: types
+  yarn rw build
+
+serve:
+  yarn rw serve
+
 db-init:
   sudo apt-get install libicu-dev
   asdf plugin-add postgres https://github.com/smashedtoatoms/asdf-postgres.git
