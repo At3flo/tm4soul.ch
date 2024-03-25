@@ -19,5 +19,7 @@ model Tag {
 
 model Image {
   uuidImage  String   @id @default(uuid())
+  imageFileExtension String
+  imageUploadURL String?
   tags       Tag[]
 }

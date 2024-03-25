@@ -1,6 +1,8 @@
 export const schema = gql`
   type Image {
     uuidImage: String!
+    imageFileExtension: String!
+    imageUploadURL: String
     tags: [Tag]!
   }
 
@@ -11,7 +13,7 @@ export const schema = gql`
   }
 
   input CreateImageInput {
-    file: Byte
+    imageFileExtension: String!
   }
 
   input UpdateImageInput {
@@ -19,7 +21,7 @@ export const schema = gql`
   }
 
   type Mutation {
-    createImage(input: CreateImageInput!): Image! @requireAuth
+    createImage(input: String!): Image! @requireAuth
     updateImage(uuidImage: String!, input: UpdateImageInput!): Image!
       @requireAuth
     deleteImage(uuidImage: String!): Image! @requireAuth

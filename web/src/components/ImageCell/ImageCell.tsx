@@ -17,6 +17,7 @@ export const QUERY: TypedDocumentNode<FindImageByTagsNormalizedQuery> = gql`
   query FindImageByTagsNormalizedQuery($tag: String!) {
     imagesByTagsNormalized(tagTitleNormalized: $tag) {
       uuidImage
+      imageFileExtension
     }
   }
 `
@@ -54,7 +55,7 @@ export const Success = ({
       gridGap="1em"
     >
       {imagesByTagsNormalized.map((image) => {
-        const imageUrl = `${process.env.MINIO_S3_ENDPOINT}/${process.env.MINIO_BUCKET_NAME}/public/images/${image.uuidImage}.jpg`
+        const imageUrl = `${process.env.MINIO_S3_ENDPOINT}/${process.env.MINIO_BUCKET_NAME}/public/images/${image.uuidImage}.${image.imageFileExtension}`
 
         return (
           <Box
