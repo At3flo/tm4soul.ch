@@ -1,5 +1,5 @@
 $TTL 3600
-@	IN SOA dns103.ovh.net. tech.ovh.net. (2024011405 86400 3600 3600000 60)
+@	IN SOA dns103.ovh.net. tech.ovh.net. (2024040702 86400 3600 3600000 60)
         IN NS     dns103.ovh.net.
         IN NS     ns103.ovh.net.
         IN MX     1 mx1.mail.ovh.net.
@@ -18,4 +18,7 @@ autoconfig        IN CNAME     mailconfig.ovh.net.
 autodiscover        IN CNAME     mailconfig.ovh.net.
 ftp        IN CNAME     tm4soul.ch.
 monitoring        IN A     173.249.10.127
+staging        IN A     173.249.10.127
+storage        IN A     173.249.10.127
+storage-s3        IN A     173.249.10.127
 www        IN CNAME     at3flo.github.io.

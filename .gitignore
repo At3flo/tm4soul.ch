@@ -25,3 +25,5 @@ id_t4s*
 
 postgres
 tmp_cgl
+container-data
+.vscode
