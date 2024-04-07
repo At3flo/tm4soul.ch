@@ -14,11 +14,14 @@ const CREATE_IMAGE_MUTATION: TypedDocumentNode<
   CreateImageMutation,
   CreateImageMutationVariables
 > = gql`
-  mutation CreateImageMutation($input: String!) {
-    createImage(input: $input) {
+  mutation CreateImageMutation($inputFilename: String!, $tags: [String]) {
+    createImage(inputFilename: $inputFilename, tags: $tags) {
       uuidImage
       imageFileExtension
       imageUploadURL
+      tags {
+        tagTitleNormalized
+      }
     }
   }
 `
@@ -30,8 +33,12 @@ const NewImage = () => {
     },
   })
 
-  const onSave = (input: string, originalFile: File) => {
-    createImage({ variables: { input } }).then((data) => {
+  const onSave = (
+    inputFilename: string,
+    originalFile: File,
+    tags: string[]
+  ) => {
+    createImage({ variables: { inputFilename, tags } }).then((data) => {
       // Use the uploadPublicUrl to upload the file to the S3 bucket
       const uploadUrl = data.data.createImage.imageUploadURL
 
@@ -68,7 +75,5 @@ const NewImage = () => {
     </div>
   )
 }
-
-
 
 export default NewImage

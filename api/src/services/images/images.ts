@@ -59,13 +59,14 @@ export const image: QueryResolvers['image'] = ({ uuidImage }) => {
 }
 
 export const createImage: MutationResolvers['createImage'] = async ({
-  input,
+  inputFilename,
+  tags,
 }) => {
   // Generate a new UUID for the image
   const imageUuid = uuidv4()
 
-  // Assuming the file name is provided in the input and has a format like 'originalname.jpg'
-  const originalFileName = input
+  // Assuming the file name is provided in the inputFilename and has a format like 'originalname.jpg'
+  const originalFileName = inputFilename
   const fileExtension = originalFileName.split('.').pop()
   const newFileName = `${imageUuid}.${fileExtension}`
 
@@ -75,19 +76,28 @@ export const createImage: MutationResolvers['createImage'] = async ({
   )
 
   // Create the image record in the database with the new UUID and file name
-  await db.image.create({
+  const createdImage = await db.image.create({
     data: {
       uuidImage: imageUuid,
       imageFileExtension: fileExtension,
+      tags: {
+        connect: tags.map((tag) => ({
+          tagTitleNormalized: tag,
+        })),
+      },
       // Other necessary fields go here
       // You might want to store the newFileName or a reference to the file's location
+    },
+    include: {
+      tags: true,
     },
   })
 
   return {
-    uuidImage: imageUuid,
-    imageFileExtension: fileExtension,
+    uuidImage: createdImage.uuidImage,
+    imageFileExtension: createdImage.imageFileExtension,
     imageUploadURL: uploadPublicUrl,
+    tags: createdImage.tags,
   }
 }
 
