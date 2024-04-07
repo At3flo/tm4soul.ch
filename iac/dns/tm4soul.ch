@@ -14,6 +14,7 @@ $TTL 3600
 _autodiscover._tcp        IN SRV     0 0 443 mailconfig.ovh.net.
 _imaps._tcp        IN SRV     0 0 993 ssl0.ovh.net.
 _submission._tcp        IN SRV     0 0 465 ssl0.ovh.net.
+analytics        IN A     173.249.10.127
 autoconfig        IN CNAME     mailconfig.ovh.net.
 autodiscover        IN CNAME     mailconfig.ovh.net.
 ftp        IN CNAME     tm4soul.ch.
