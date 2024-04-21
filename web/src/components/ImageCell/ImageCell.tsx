@@ -1,4 +1,18 @@
-import { Box, Image, Spinner } from '@chakra-ui/react'
+import { useState } from 'react'
+
+import { theme } from 'config/chakra.config'
+
+import {
+  Box,
+  Flex,
+  Image,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
+  Spinner,
+} from '@chakra-ui/react'
 import type { FindImageByTagsNormalizedQuery } from 'types/graphql'
 
 import type {
@@ -43,39 +57,75 @@ export const Failure = ({
 export const Success = ({
   imagesByTagsNormalized,
 }: CellSuccessProps<FindImageByTagsNormalizedQuery>) => {
-  return (
-    <Box
-      display="grid"
-      gridTemplateColumns={{
-        base: 'repeat(1, 1fr)',
-        sm: 'repeat(2, 1fr)',
-        md: 'repeat(3, 1fr)',
-        xl: 'repeat(4, 1fr)',
-      }}
-      gridGap="1em"
-    >
-      {imagesByTagsNormalized.map((image) => {
-        const imageUrl = `${process.env.MINIO_S3_ENDPOINT}/${process.env.MINIO_BUCKET_NAME}/public/images/${image.uuidImage}.${image.imageFileExtension}`
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
-        return (
-          <Box
-            key={image.uuidImage}
-            width="12em"
-            height="12em"
-            overflow="hidden"
-            borderRadius="md"
-            marginBottom="1em"
-          >
-            <Image
-              src={imageUrl}
-              alt={``}
-              objectFit="cover"
-              width="100%"
-              height="100%"
-            />
-          </Box>
-        )
-      })}
-    </Box>
+  const onOpen = (imageUrl: string) => {
+    setSelectedImage(imageUrl)
+  }
+
+  const onClose = () => {
+    setSelectedImage(null)
+  }
+
+  return (
+    <>
+      <Box
+        display="grid"
+        gridTemplateColumns={{
+          base: 'repeat(1, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)',
+          xl: 'repeat(4, 1fr)',
+        }}
+        gridGap="1em"
+      >
+        {imagesByTagsNormalized.map((image) => {
+          const imageUrl = `${process.env.MINIO_S3_ENDPOINT}/${process.env.MINIO_BUCKET_NAME}/public/images/${image.uuidImage}.${image.imageFileExtension}`
+
+          return (
+            <Box
+              key={image.uuidImage}
+              width="12em"
+              height="12em"
+              overflow="hidden"
+              borderRadius="md"
+              marginBottom="1em"
+              cursor="pointer"
+              onClick={() => onOpen(imageUrl)}
+            >
+              <Image
+                src={imageUrl}
+                alt={``}
+                objectFit="cover"
+                width="100%"
+                height="100%"
+              />
+            </Box>
+          )
+        })}
+      </Box>
+      <Modal
+        isOpen={!!selectedImage}
+        onClose={onClose}
+        size="full"
+        motionPreset="slideInBottom"
+      >
+        <ModalOverlay />
+        <ModalContent bg={theme.colors.primary.black}>
+          <ModalCloseButton color={theme.colors.primary.white} />
+          <ModalBody>
+            <Flex align="center" justify="center" height="calc(100vh - 16px)">
+              <Image
+                src={selectedImage ?? ''}
+                alt=""
+                maxWidth="100%"
+                maxHeight="100%"
+                objectFit="contain"
+              />
+            </Flex>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
   )
 }
