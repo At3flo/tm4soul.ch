@@ -7,9 +7,9 @@ export const schema = gql`
   }
 
   type Query {
-    images: [Image!]! @requireAuth
-    image(uuidImage: String!): Image @requireAuth
-    imagesByTagsNormalized(tagTitleNormalized: String!): [Image!]! @requireAuth
+    images: [Image!]! @skipAuth
+    image(uuidImage: String!): Image @skipAuth
+    imagesByTagsNormalized(tagTitleNormalized: String!): [Image!]! @skipAuth
   }
 
   input CreateImageInput {

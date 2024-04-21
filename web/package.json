@@ -17,6 +17,7 @@
     "@chakra-ui/react": "^2",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@redwoodjs/auth-dbauth-web": "7.4.2",
     "@redwoodjs/forms": "7.4.2",
     "@redwoodjs/router": "7.4.2",
     "@redwoodjs/web": "7.4.2",

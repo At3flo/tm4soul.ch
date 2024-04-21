@@ -8,6 +8,7 @@
     ]
   },
   "devDependencies": {
+    "@redwoodjs/auth-dbauth-setup": "7.4.2",
     "@redwoodjs/core": "7.4.2",
     "mprocs": "^0.6.4"
   },

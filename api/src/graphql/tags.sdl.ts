@@ -8,9 +8,9 @@ export const schema = gql`
   }
 
   type Query {
-    tags: [Tag!]! @requireAuth
-    tag(uuidTag: String!): Tag @requireAuth
-    tagByTitleNormalized(tagTitleNormalized: String!): Tag @requireAuth
+    tags: [Tag!]! @skipAuth
+    tag(uuidTag: String!): Tag @skipAuth
+    tagByTitleNormalized(tagTitleNormalized: String!): Tag @skipAuth
   }
 
   input CreateTagInput {
