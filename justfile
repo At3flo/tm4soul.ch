@@ -30,6 +30,9 @@ db-init:
 db-start:
   pg_ctl start
 
+db-stop:
+  pg_ctl stop
+
 db-migrate:
   yarn redwood prisma migrate dev
 
@@ -107,9 +110,9 @@ build-containers: sync-versions
   docker save -o iac/dist/tm4soulch-api.tar tm4soul.ch/tm4soulch-api:"$(git-sv nv)"
   docker save -o iac/dist/tm4soulch-console.tar tm4soul.ch/tm4soulch-console:"$(git-sv nv)"
 
-run-containers-locally:
-  node_modules/mprocs/cli.js "docker compose -f docker-compose.prod.yml up" \
-  "docker compose -f ./docker-compose.prod.yml run --rm -it console /bin/bash"
+start-containers-locally:
+  node_modules/mprocs/cli.js "docker compose -f docker-compose.prod.yml --env-file .env up" \
+  "sleep 3 && docker compose -f ./docker-compose.prod.yml --env-file .env run --rm -it console /bin/bash"
 
 stop-containers-locally:
   docker compose -f docker-compose.prod.yml down

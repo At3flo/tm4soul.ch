@@ -1,25 +1,28 @@
 version: "3.8"
-
 services:
   api:
-    image: tm4soul.ch/tm4soulch-api::0.1.1
+    image: tm4soul.ch/tm4soulch-api:0.2.0
     ports:
-      - "8911:8911"
+      - 8911:8911
     depends_on:
       - db
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - SESSION_SECRET=${SESSION_SECRET}
-
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_S3_ENDPOINT=${MINIO_S3_ENDPOINT}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME}
+      - MINIO_S3_REGION=${MINIO_S3_REGION}
   web:
-    image: tm4soul.ch/tm4soulch-web::0.1.1
+    image: tm4soul.ch/tm4soulch-web:0.2.0
     ports:
-      - "8910:8910"
+      - 8910:8910
     depends_on:
       - api
     environment:
       - API_HOST=http://api:8911
-
   db:
     image: postgres:16-bookworm
     environment:
@@ -27,17 +30,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
-      - ./postgres:/var/lib/postgresql/data
-
-  console:
-    user: root
-    image: tm4soul.ch/tm4soulch-console:0.1.1
-    tmpfs:
-      - /tmp
-    command: "true"
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-    depends_on:
-      - db
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data: {}
+networks: {}

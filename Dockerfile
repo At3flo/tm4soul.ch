@@ -29,6 +29,12 @@ RUN --mount=type=cache,target=/home/node/.yarn/berry/cache,uid=1000 \
 
 COPY --chown=node:node redwood.toml .
 COPY --chown=node:node graphql.config.js .
+
+ARG MINIO_S3_ENDPOINT
+ARG MINIO_BUCKET_NAME
+ENV MINIO_S3_ENDPOINT=$MINIO_S3_ENDPOINT
+ENV MINIO_BUCKET_NAME=$MINIO_BUCKET_NAME
+
 COPY --chown=node:node .env.defaults .env.defaults
 
 # api build
@@ -84,6 +90,12 @@ RUN --mount=type=cache,target=/home/node/.yarn/berry/cache,uid=1000 \
 
 COPY --chown=node:node redwood.toml .
 COPY --chown=node:node graphql.config.js .
+
+ARG MINIO_S3_ENDPOINT
+ARG MINIO_BUCKET_NAME
+ENV MINIO_S3_ENDPOINT=$MINIO_S3_ENDPOINT
+ENV MINIO_BUCKET_NAME=$MINIO_BUCKET_NAME
+
 COPY --chown=node:node .env.defaults .env.defaults
 
 COPY --chown=node:node --from=api_build /home/node/app/api/dist /home/node/app/api/dist
@@ -116,6 +128,12 @@ RUN --mount=type=cache,target=/home/node/.yarn/berry/cache,uid=1000 \
 
 COPY --chown=node:node redwood.toml .
 COPY --chown=node:node graphql.config.js .
+
+ARG MINIO_S3_ENDPOINT
+ARG MINIO_BUCKET_NAME
+ENV MINIO_S3_ENDPOINT=$MINIO_S3_ENDPOINT
+ENV MINIO_BUCKET_NAME=$MINIO_BUCKET_NAME
+
 COPY --chown=node:node .env.defaults .env.defaults
 
 COPY --chown=node:node --from=web_build /home/node/app/web/dist /home/node/app/web/dist

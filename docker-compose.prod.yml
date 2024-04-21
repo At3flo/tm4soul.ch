@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   api:
     build:
@@ -7,37 +6,42 @@ services:
       dockerfile: ./Dockerfile
       target: api_serve
     ports:
-      - "8911:8911"
+      - 8911:8911
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgresql://redwood:redwood@db:5432/redwood
-      - TEST_DATABASE_URL=postgresql://redwood:redwood@db:5432/redwood_test
-      - SESSION_SECRET=super_secret_session_key_change_me_in_production_please
-
+      - DATABASE_URL=${DATABASE_URL}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_S3_ENDPOINT=${MINIO_S3_ENDPOINT}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME}
+      - MINIO_S3_REGION=${MINIO_S3_REGION}
   web:
     build:
       context: .
       dockerfile: ./Dockerfile
       target: web_serve
+      args:
+        - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME}
+        - MINIO_S3_ENDPOINT=${MINIO_S3_ENDPOINT}
     ports:
-      - "8910:8910"
+      - 8910:8910
     depends_on:
       - api
     environment:
       - API_HOST=http://api:8911
-
   db:
     image: postgres:16-bookworm
     environment:
-      POSTGRES_USER: redwood
-      POSTGRES_PASSWORD: redwood
-      POSTGRES_DB: redwood
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
-      - ./postgres:/var/lib/postgresql/data
-
+      - db-data:/var/lib/postgresql/data
   # After starting with `docker compose -f ./docker-compose.prod.yml up`,
   # use the console to run commands in the container:
   #
@@ -54,7 +58,9 @@ services:
       - /tmp
     command: "true"
     environment:
-      - DATABASE_URL=postgresql://redwood:redwood@db:5432/redwood
-      - TEST_DATABASE_URL=postgresql://redwood:redwood@db:5432/redwood_test
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - db
+volumes:
+  db-data: {}
+networks: {}

@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import { theme } from 'config/chakra.config'
-
 import {
   Box,
   Flex,
@@ -13,6 +11,7 @@ import {
   ModalOverlay,
   Spinner,
 } from '@chakra-ui/react'
+import { theme } from 'config/chakra.config'
 import type { FindImageByTagsNormalizedQuery } from 'types/graphql'
 
 import type {

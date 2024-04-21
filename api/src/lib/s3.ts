@@ -2,6 +2,7 @@
 import { S3Client, S3ClientConfig } from '@aws-sdk/client-s3'
 
 const s3ClientConfig: S3ClientConfig = {
+  region: process.env.MINIO_S3_REGION ?? 'eu-central-2',
   credentials: {
     accessKeyId: process.env.MINIO_ACCESS_KEY ?? '',
     secretAccessKey: process.env.MINIO_SECRET_KEY ?? '',
