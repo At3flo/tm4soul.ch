@@ -18,28 +18,28 @@ export default async () => {
         tagTitleWithDiacritics: 'Fototherapie',
         tagDescription:
           'Körperliche Veränderungen, oder mangelndes Selbstvertrauen – sich selber schön finden und lieben können ist keine Selbstverständlichkeit. Aber lernbar. Denn Schönheit ist überall – manchmal erkennen wir sie nur (noch) nicht.',
-        tagWeight: 1,
+        tagWeight: 3,
       },
       {
         tagTitleNormalized: 'NATURPROJEKT',
         tagTitleWithDiacritics: 'Naturprojekt',
         tagDescription:
           'Egal ob geradlinig und schlank wie eine Birke, oder krumm und knorrig wie ein Olivenbaum. Die Natur ist perfekt wie sie ist - wie der menschliche Körper auch. Das Projekt besteht darin, die verschiedenen Körper in ihrer individuellen Schönheit in Symbiose mit der Natur fotografisch festzuhalten.',
-        tagWeight: 1,
+        tagWeight: 3,
       },
       {
         tagTitleNormalized: 'PORTRAIT',
         tagTitleWithDiacritics: 'Portrait',
         tagDescription:
           'Menschen, Gesichter, Ausdrücke und Impressionen – ein Spiel mit Licht und Schatten vermischt mit deiner Physiognomie und Mimik verwandelt jedes Antlitz in ein Kunstwerk. Einzigartige Bilder, die deine Persönlichkeit und Schönheit hervorheben und unterstreichen.',
-        tagWeight: 2,
+        tagWeight: 4,
       },
       {
         tagTitleNormalized: 'STUDIO',
         tagTitleWithDiacritics: 'Studio',
         tagDescription:
           'Alles was das Herz begehrt – das Studio im Dachstock ermöglicht es uns, deine Ideen, Wünsche und Fantasien in Bilder zu verpacken. Dir fehlt die Fantasie? Dann lass dich von unserer Fotogalerie inspirieren.',
-        tagWeight: 2,
+        tagWeight: 4,
       },
       {
         tagTitleNormalized: 'PROJEKTE',
@@ -49,38 +49,38 @@ export default async () => {
         tagWeight: 2,
       },
       {
-        tagTitleNormalized: 'FRAUENBILDER',
-        tagTitleWithDiacritics: 'Frauenbilder',
+        tagTitleNormalized: 'LES FEMMES',
+        tagTitleWithDiacritics: 'Les Femmes',
         tagDescription:
           'Feiere dich und deine Weiblichkeit und gönn dir ein sinnliches Fotoshooting. Fühle dich schön, sexy und unwiderstehlich, verliebe dich in dich selbst. Einzigartige Bilder, die die Persönlichkeit der Frau und deren Schönheit hervorheben und unterstreichen.',
-        tagWeight: 2,
+        tagWeight: 3,
       },
       {
         tagTitleNormalized: 'MAENNERPORTRAIT',
         tagTitleWithDiacritics: 'Männerportrait',
         tagDescription:
           'Ausdruckstarke Gesichter sagen mehr als viele Worte. Männerportraits etwas anders dargestellt, das Spiel mit Licht und Schatten und harten Kontrasten. Einzigartige Bilder, die die Persönlichkeit des Mannes hervorheben und unterstreichen.',
-        tagWeight: 2,
+        tagWeight: 3,
       },
       {
         tagTitleNormalized: 'NATUR UND TIER',
         tagTitleWithDiacritics: 'Natur und Tier',
         tagDescription:
           'Wunderschöne Portraits von deiner Katze, actiongeladene Rennfotos von deinem Hund... Du und dein Liebling zu Hause, in der Natur oder im Studio, entspannt und unkompliziert.',
-        tagWeight: 3,
+        tagWeight: 2,
       },
       {
-        tagTitleNormalized: 'OLDTIMER UND BIKES',
+        tagTitleNormalized: 'OLDTIMER',
         tagTitleWithDiacritics: 'Oldtimer und Bikes',
         tagDescription:
-          'Obwohl zum Teil in die Jahre gekommen, haben die edlen Stücke kein Bisschen an Faszination verloren, im Gegenteil, das auf Hochglanz polierte Chrom bringt so manches Herz zum klopfen... Gerne draussen, an ausgewählter Location oder besonderem Anlass. Jedes Bike ist einmalig, in unserer extra nach Vintage eingerichteter Garage, setzen wir dein Bijou bei jedem Wetter ins richtige Licht.',
+          'Obwohl zum Teil in die Jahre gekommen, haben die edlen Stücke kein Bisschen an Faszination verloren, im Gegenteil, das auf Hochglanz polierte Chrom bringt so manches Herz zum klopfen... Gerne draussen, an ausgewählter Location oder besonderem Anlass. Jedes Fahrzeug ist einmalig.',
         tagWeight: 3,
       },
       {
         tagTitleNormalized: 'FAMILIEN UND PAARE',
         tagTitleWithDiacritics: 'Familien und Paare',
         tagDescription:
-          'Das gewisse Etwas als Geschenk zum Valentinstag, oder Familienzusammenkunft ohne besonderen Anlass, festgehalten als Erinnerung. Familienshooting oder sinnliche Stunden zu zweit – der Moment zählt, in der richtigen Sekunde auf den Auslöser gedrückt für unvergessliche Bilder.',
+          'Familienshooting oder sinnliche Stunden zu zweit – der Moment zählt, in der richtigen Sekunde auf den Auslöser gedrückt für unvergessliche Bilder. Als spezielles Geschenk zum Valentinstag, oder die Familienzusammenkunft ohne besonderen Anlass als schöne Erinnerung festgehalten.',
         tagWeight: 3,
       },
       {
@@ -98,8 +98,8 @@ export default async () => {
         tagWeight: 4,
       },
       {
-        tagTitleNormalized: 'PRODUKTE UND INSEZNIERUNGEN',
-        tagTitleWithDiacritics: 'Produkte und Inseznierungen',
+        tagTitleNormalized: 'PRODUKTE UND AUFTRAEGE',
+        tagTitleWithDiacritics: 'Produkte und Aufträge',
         tagDescription:
           'Jedes Ding an seinem Ort …  und manchmal helfen wir etwas nach… die richtige Mischung bringt das perfekte Gericht. Mit unserem Fundus an Möbeln und Dekomaterial inszenieren wir dein Produkt und geben dem Bild die richtige Würze.',
         tagWeight: 4,
@@ -109,7 +109,7 @@ export default async () => {
         tagTitleWithDiacritics: 'Tattoo',
         tagDescription:
           'Das Kunstwerk auf deinem Körper, gestochen scharf abgebildet, in perfektem Licht, Körperposition  und Ausdruck abgebildet - macht sich wunderbar und einmalig als Bild im Wohnraum, wo du dich voller Stolz täglich betrachten, oder betrachten lassen, kannst.',
-        tagWeight: 4,
+        tagWeight: 3,
       },
       {
         tagTitleNormalized: 'BOUDOIR UND GLAMOUR',
@@ -126,11 +126,11 @@ export default async () => {
         tagWeight: 5,
       },
       {
-        tagTitleNormalized: 'BEWERBUNG',
-        tagTitleWithDiacritics: 'Bewerbung',
+        tagTitleNormalized: 'BUSINESS',
+        tagTitleWithDiacritics: 'Business',
         tagDescription:
           'Das Bewerbungsfoto ist der erste wichtige Eindruck einer Bewerbung. Erhöhe Deine beruflichen Chancen zu deinem Traumjob mit einem professionellen Bewerbungsfoto.',
-        tagWeight: 5,
+        tagWeight: 4,
       },
       {
         tagTitleNormalized: 'KIDS',
@@ -144,7 +144,7 @@ export default async () => {
         tagTitleWithDiacritics: 'Fantasie und Cosplay',
         tagDescription:
           'Hallo Prinzessin, hallo Wikinger – gemeinsam suchen wir nach der perfekten Location um dein Kostüm in Szene zu setzen. Rollenspiele soweit die Fantasie reicht. Stets neue Ideen und Herausforderungen sind unser Markenzeichen, je verrückter umso lieber!',
-        tagWeight: 6,
+        tagWeight: 4,
       },
       {
         tagTitleNormalized: 'BABYBAUCH UND NEWBORN',
@@ -161,10 +161,43 @@ export default async () => {
         tagWeight: 6,
       },
       {
-        tagTitleNormalized: 'DROHNE',
-        tagTitleWithDiacritics: 'Drohne',
-        tagDescription: 'Folgt',
-        tagWeight: 6,
+        tagTitleNormalized: 'AKT UND EROTIK',
+        tagTitleWithDiacritics: 'Akt und Erotik',
+        tagDescription: 'Coming soon...',
+        tagWeight: 3,
+      },
+      {
+        tagTitleNormalized: 'SENSUAL PORTRAITS',
+        tagTitleWithDiacritics: 'Sensual Portraits',
+        tagDescription:
+          'Ehrliche und ungeschönte Portraits von ungeschminkten Frauen jeden Alters, zeigen die natürliche Schönheit, Stärke und Verletzlichkeit einer jeden Frau, ohne vertuschendes MakeUp oder täuschende Filter. Sei wie du bist!',
+        tagWeight: 2,
+      },
+      {
+        tagTitleNormalized: 'MAKING OFF',
+        tagTitleWithDiacritics: 'Making off',
+        tagDescription:
+          'Lustige Momente in und ums Fotoshooting - der Blick hinter die Kamera',
+        tagWeight: 4,
+      },
+      {
+        tagTitleNormalized: 'LE GARAGE',
+        tagTitleWithDiacritics: 'Le Garage',
+        tagDescription:
+          'In unserem coolen vintage eingerichteten LE GARAGE knipsen wir geile Bilder von dir mit deinem Bike. Die spezifisch abgestimmte Nachbearbeitung der Aufnahmen bringt Lack und Chrom zum Glänzen und den Besitzer/in zum Strahlen. Egal ob Oldtimer, Chopper, CafeRacer oder Dirtbike….. alle 2Räder sind willkommen und werden stilvoll in Szene gesetzt.',
+        tagWeight: 2,
+      },
+      {
+        tagTitleNormalized: 'SHIBARI',
+        tagTitleWithDiacritics: 'Shibari',
+        tagDescription: 'Coming soon...',
+        tagWeight: 2,
+      },
+      {
+        tagTitleNormalized: 'STREETFOTOGRAFIE',
+        tagTitleWithDiacritics: 'Streetfotografie',
+        tagDescription: 'Coming soon...',
+        tagWeight: 5,
       },
     ]
     console.log(
