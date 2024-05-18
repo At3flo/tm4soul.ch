@@ -33,6 +33,18 @@ services:
       - 5432:5432
     volumes:
       - db-data:/var/lib/postgresql/data
+  # sudo docker compose -f ./compose.yaml run --rm -it console /bin/bash
+  # yarn rw prisma migrate reset
+  console:
+    user: root
+    image: tm4soul.ch/tm4soulch-console:0.2.0
+    tmpfs:
+      - /tmp
+    command: "true"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - db
 volumes:
   db-data: {}
 networks: {}
