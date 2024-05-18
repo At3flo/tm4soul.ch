@@ -1,6 +1,8 @@
 import type { Prisma } from '@prisma/client'
 import { db } from 'api/src/lib/db'
 
+import { hashPassword } from '@redwoodjs/auth-dbauth-api'
+
 export default async () => {
   try {
     //
@@ -200,9 +202,7 @@ export default async () => {
         tagWeight: 5,
       },
     ]
-    console.log(
-      "\nUsing the default './scripts/seed.{js,ts}' template\nEdit the file to add seed data\n"
-    )
+    console.log('\nSeeding Tags...\n')
 
     // Note: if using PostgreSQL, using `createMany` to insert multiple records is much faster
     // @see: https://www.prisma.io/docs/reference/api-reference/prisma-client-reference#createmany
@@ -214,30 +214,299 @@ export default async () => {
         const record = await db.tag.create({ data })
         console.log(record)
       })
-    )
+    ).then(() => {
+      console.log('\nSeeding Images...\n')
+
+      const images: Prisma.ImageCreateArgs['data'][] = [
+        {
+          uuidImage: 'b96ea44f-754b-4737-af7d-3a7280733eb5',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: [
+              {
+                tagTitleNormalized: 'FOTOTHERAPIE',
+              },
+              {
+                tagTitleNormalized: 'PORTRAIT',
+              },
+            ],
+          },
+        },
+        {
+          uuidImage: 'd2c6ebe2-5e46-4bed-8b23-49bb3a15c671',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'MAKING OFF',
+            },
+          },
+        },
+        {
+          uuidImage: 'f3f0b8bb-84c2-4cc1-962f-21da969c3c32',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'MAENNERPORTRAIT',
+            },
+          },
+        },
+        {
+          uuidImage: '2ed94c9e-528a-416f-99a2-649112b43bfe',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'AKT UND EROTIK',
+            },
+          },
+        },
+        {
+          uuidImage: '99faf649-4688-4b3e-899a-e555859eeb9b',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'ANLAESSE',
+            },
+          },
+        },
+        {
+          uuidImage: '7290795c-c955-4bdf-8853-fa121d03fa7f',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'BABYBAUCH UND NEWBORN',
+            },
+          },
+        },
+        {
+          uuidImage: 'cb98e852-6941-452d-8f87-0f3a3e7bec83',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'BOUDOIR UND GLAMOUR',
+            },
+          },
+        },
+        {
+          uuidImage: '3b8ef7c1-3af4-4892-9b58-5e40d9d8a96c',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'BUSINESS',
+            },
+          },
+        },
+        {
+          uuidImage: '5adca6ed-15b9-46c4-92e5-c1817d85ef0e',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'ESSEN UND GETRAENKE',
+            },
+          },
+        },
+        {
+          uuidImage: 'bc1b21d8-4ff9-4a5d-8426-d2b8a0e73122',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'FAMILIEN UND PAARE',
+            },
+          },
+        },
+        {
+          uuidImage: '3d6af620-56bd-4ce7-aa15-7a91cf263aff',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'KIDS',
+            },
+          },
+        },
+        {
+          uuidImage: 'f74e0836-a7c8-43cc-812f-a7875c96bd4f',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'LE GARAGE',
+            },
+          },
+        },
+        {
+          uuidImage: '85273ddf-de75-44ca-8de1-86ef6e36436b',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'LES FEMMES',
+            },
+          },
+        },
+        {
+          uuidImage: '3a00ba26-3944-4d2f-a368-2a803039d7e1',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'MUSIK UND TANZ',
+            },
+          },
+        },
+        {
+          uuidImage: '916c8930-3c05-4997-88d6-fe5cda1ff6ff',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'NATUR UND TIER',
+            },
+          },
+        },
+        {
+          uuidImage: 'd1455951-1ce3-45c6-9cce-7cb2e5328417',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'NATURPROJEKT',
+            },
+          },
+        },
+        {
+          uuidImage: '1634dd25-7c8e-417b-8168-81796eeaa1fb',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'OLDTIMER',
+            },
+          },
+        },
+        {
+          uuidImage: '5b5b17f4-7aeb-431c-bcca-c088092eca54',
+          imageFileExtension: 'jpg',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'PRODUKTE UND AUFTRAEGE',
+            },
+          },
+        },
+        {
+          uuidImage: '76160bbd-975d-46a6-b07e-4cd0a869d119',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'PROJEKTE',
+            },
+          },
+        },
+        {
+          uuidImage: 'b0a64f83-789e-4d24-befe-b996ca498506',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'SHIBARI',
+            },
+          },
+        },
+        {
+          uuidImage: '998a5d12-3ba2-4929-a583-5fb686d2538b',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'STEAMPUNK',
+            },
+          },
+        },
+        {
+          uuidImage: '8a1086a2-27bb-4194-9a26-a92ac8208824',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'STREETFOTOGRAFIE',
+            },
+          },
+        },
+        {
+          uuidImage: '3b7ada1b-8469-4c72-8fa4-5c303cb35458',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'STUDIO',
+            },
+          },
+        },
+        {
+          uuidImage: '09a98ea4-4fec-4644-aaf9-1776971aced3',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'TATTOO',
+            },
+          },
+        },
+        {
+          uuidImage: 'c0ee918a-c69d-4535-826f-4f9c2f290eab',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'SENSUAL PORTRAITS',
+            },
+          },
+        },
+        {
+          uuidImage: '5698506e-be86-4ec3-927a-4c040a3eb176',
+          imageFileExtension: 'webp',
+          tags: {
+            connect: {
+              tagTitleNormalized: 'FANTASIE UND COSPLAY',
+            },
+          },
+        },
+      ]
+
+      Promise.all(
+        images.map(async (image: Prisma.ImageCreateArgs['data']) => {
+          try {
+            const record = await db.image.create({
+              data: image,
+            })
+            console.log(record)
+            return record
+          } catch (error) {
+            console.log(
+              `Task with uuid ${image.uuidImage} already exists, skipping...`
+            )
+            return null
+          }
+        })
+      )
+    })
 
     // If using dbAuth and seeding users, you'll need to add a `hashedPassword`
     // and associated `salt` to their record. Here's how to create them using
     // the same algorithm that dbAuth uses internally:
     //
-    //   import { hashPassword } from '@redwoodjs/auth-dbauth-api'
-    //
-    //   const users = [
-    //     { name: 'john', email: 'john@example.com', password: 'secret1' },
-    //     { name: 'jane', email: 'jane@example.com', password: 'secret2' }
-    //   ]
-    //
-    //   for (user of users) {
-    //     const [hashedPassword, salt] = hashPassword(user.password)
-    //     await db.user.create({
-    //       data: {
-    //         name: user.name,
-    //         email: user.email,
-    //         hashedPassword,
-    //         salt
-    //       }
-    //     })
-    //   }
+
+    const users = [{ name: 'admin', email: 'admin', password: 'tmtm4tm' }]
+
+    console.log('\nSeeding users...\n')
+
+    Promise.all(
+      users.map(async (userData) => {
+        const [hashedPassword, salt] = hashPassword(userData.password)
+        const data = {
+          ...userData,
+          hashedPassword,
+          salt,
+        }
+        delete data.password
+        try {
+          const record = await db.user.create({
+            data: data,
+          })
+          console.log(record)
+          return record
+        } catch (error) {
+          console.log(`User with uuid ${data.name} already exists, skipping...`)
+          return null
+        }
+      })
+    )
   } catch (error) {
     console.warn('Please define your seed data.')
     console.error(error)
