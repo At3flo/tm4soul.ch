@@ -36,6 +36,9 @@ const Navbar = () => {
             <MenuItem as="a" href="/photography">
               Fotografie
             </MenuItem>
+            <MenuItem as="a" href="/whois">
+              Über uns
+            </MenuItem>
           </MenuList>
         </Menu>
         <Spacer />
